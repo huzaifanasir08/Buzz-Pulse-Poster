@@ -1,18 +1,15 @@
 from rest_framework import viewsets
-from .models import SocialAccount, Post, PostLog, InstagramAccount
-from .serializers import SocialAccountSerializer, PostSerializer, PostLogSerializer, InstagramAccountSerializer, InstagramAccountListSerializer
+from .models import MediaPost, MediaFile, InstagramAccount
+from .serializers import MediaPostSerializer, MediaFileSerializer, InstagramAccountSerializer, InstagramAccountListSerializer
 
-class SocialAccountViewSet(viewsets.ModelViewSet):
-    queryset = SocialAccount.objects.all()
-    serializer_class = SocialAccountSerializer
 
-class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-class PostLogViewSet(viewsets.ModelViewSet):
-    queryset = PostLog.objects.all()
-    serializer_class = PostLogSerializer
+class MediaPostViewSet(viewsets.ModelViewSet):
+    queryset = MediaPost.objects.all().order_by('-created_at')
+    serializer_class = MediaPostSerializer
+    
+class MediaFileViewSet(viewsets.ModelViewSet):
+    queryset = MediaFile.objects.all()
+    serializer_class = MediaFileSerializer
 
 # class InstagramAccountViewSet(viewsets.ModelViewSet):
 #     queryset = InstagramAccount.objects.all()

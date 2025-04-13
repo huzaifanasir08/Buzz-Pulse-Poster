@@ -73,7 +73,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'BuzzPulsePoster',
         'USER': 'root',
-        'PASSWORD': '(M?UxlVOg;Tmg/rR',
+        'PASSWORD': '<sA_?qg}LG[NHqKe',
         'HOST': '34.68.177.223',
         'PORT': '3306',
     }

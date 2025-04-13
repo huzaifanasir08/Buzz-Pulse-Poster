@@ -1,20 +1,36 @@
 from rest_framework import serializers
-from .models import SocialAccount, Post, PostLog, InstagramAccount
+from .models import MediaPost, MediaFile, InstagramAccount
 
-class SocialAccountSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SocialAccount
-        fields = '__all__'
 
-class PostSerializer(serializers.ModelSerializer):
+class MediaFileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Post
-        fields = '__all__'
+        model = MediaFile
+        fields = ['file_url']
 
-class PostLogSerializer(serializers.ModelSerializer):
+
+class MediaPostSerializer(serializers.ModelSerializer):
+    media_files = MediaFileSerializer(many=True)
+    
     class Meta:
-        model = PostLog
-        fields = '__all__'
+        model = MediaPost
+        fields = [
+            'id', 'instagram_account', 'post_type', 'description',
+            'scheduled_time', 'time_gap', 'media_files'
+        ]
+
+    def validate(self, data):
+        if data.get('scheduled_time') and data.get('time_gap'):
+            raise serializers.ValidationError("Provide either scheduled_time or time_gap, not both.")
+        if not data.get('scheduled_time') and not data.get('time_gap'):
+            raise serializers.ValidationError("Either scheduled_time or time_gap must be provided.")
+        return data
+
+    def create(self, validated_data):
+        media_data = validated_data.pop('media_files')
+        post = MediaPost.objects.create(**validated_data)
+        for media in media_data:
+            MediaFile.objects.create(media_post=post, **media)
+        return post
 
 class InstagramAccountSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
