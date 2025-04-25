@@ -5,19 +5,12 @@ from core.encryption import fernet
 
 class InstagramAccount(models.Model):
     username = models.CharField(max_length=150, unique=True)
-    _password = models.TextField(db_column='password', default= 'password')  # actual encrypted field
+    access_token = models.TextField(max_length=500, default='')
     proxy = models.CharField(max_length=255, blank=True, null=True)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    last_login = models.DateTimeField(blank=True, null=True)
+    # created_at = models.DateTimeField(auto_now_add=True)
+    # last_login = models.DateTimeField(blank=True, null=True)
     
-    @property
-    def password(self):
-        return fernet.decrypt(self._password.encode()).decode()
-
-    @password.setter
-    def password(self, raw):
-        self._password = fernet.encrypt(raw.encode()).decode()
     def __str__(self):
         return self.username
     

@@ -1,6 +1,10 @@
 from rest_framework import viewsets
 from .models import MediaPost, MediaFile, InstagramAccount
-from .serializers import MediaPostSerializer, MediaFileSerializer, InstagramAccountSerializer, InstagramAccountListSerializer
+from .serializers import MediaPostSerializer, MediaFileSerializer, InstagramAccountSerializer
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 
 
 class MediaPostViewSet(viewsets.ModelViewSet):
@@ -15,10 +19,10 @@ class MediaFileViewSet(viewsets.ModelViewSet):
 #     queryset = InstagramAccount.objects.all()
 #     serializer_class = InstagramAccountSerializer
 
-class InstagramAccountViewSet(viewsets.ModelViewSet):
-    queryset = InstagramAccount.objects.all()
-
-    def get_serializer_class(self):
-        if self.action in ['list', 'retrieve']:
-            return InstagramAccountListSerializer
-        return InstagramAccountSerializer
+@api_view(['POST'])
+def CreateInstagramAccount(request):
+    serializer = InstagramAccountSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
