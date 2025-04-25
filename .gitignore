@@ -3,3 +3,4 @@ backend/.env
 backend/BuzzPulsePoster/settings.py
 backend/eighth-bivouac-456120-s9-8e78bcdfe7b3.json
 frontend/package-lock.json
+backend/auth.json
