@@ -1,4 +1,4 @@
-host="34.68.177.223"   # Your host, e.g., "localhost"
-user="root" # Your MySQL username
-password="<sA_?qg}LG[NHqKe" # Your MySQL password
-database="BuzzPulsePoster"  # Your database name
+host="Host"   # Your host, e.g., "localhost"
+user="username" # Your MySQL username
+password="password" # Your MySQL password
+database="databasename"  # Your database name
