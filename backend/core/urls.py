@@ -12,4 +12,7 @@ router.register(r'media-posts', MediaPostViewSet, basename='media-post')
 urlpatterns = [
     path('', include(router.urls)),
     path('createaccount/', views.CreateInstagramAccount, name='CreateInstagramAccount'),
+    path('accountlist/', views.accounts_list, name='accounts_list'),
+    path('upload_to_gcs/', views.upload_to_gcs, name='upload_to_gcs'),
+    path('savedata/', views.save_post_details, name='save_post_details'),
 ]

@@ -6,8 +6,13 @@ def upload_media_to_gcs(bucket_name, local_file_path, gcs_destination_path, clie
     bucket = client.bucket(bucket_name)
     blob = bucket.blob(gcs_destination_path)
 
-    blob.upload_from_filename(local_file_path)
-
+    with open(local_file_path, "rb") as file_obj:
+        blob.upload_from_file(
+            file_obj,
+            timeout=600,  # 5 minutes
+            rewind=True,  # Rewind for retries
+            content_type=None  # Can detect type automatically
+        )
     if make_public:
         blob.make_public()
         public_url = f"https://storage.googleapis.com/{bucket_name}/{gcs_destination_path}"
@@ -18,13 +23,4 @@ def upload_media_to_gcs(bucket_name, local_file_path, gcs_destination_path, clie
         print(f"GS Path: {gs_path}")
         return gs_path
 
-# Usage
-bucket_name = "postingmedia"
-video_path = "video1.mp4"
-public_url = upload_media_to_gcs(
-    bucket_name=bucket_name,
-    local_file_path=video_path,
-    gcs_destination_path=f"Videos/{video_path}",
-    client=client,
-    make_public=True
-)
+

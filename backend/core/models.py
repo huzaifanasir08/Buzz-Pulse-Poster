@@ -16,16 +16,14 @@ class InstagramAccount(models.Model):
     
 
 class MediaPost(models.Model):
-    POST_TYPE_CHOICES = [
-        ('photo_video', 'Photo & Video'),
-        ('reel', 'Reel'),
-    ]
 
     instagram_account = models.ForeignKey(InstagramAccount, on_delete=models.CASCADE)
-    post_type = models.CharField(max_length=20, choices=POST_TYPE_CHOICES)
-    description = models.TextField(blank=True)
+    post_type = models.CharField(max_length=20)
+    media_url = models.CharField(max_length=500, default="")  # URL of the media file
+    caption = models.TextField(blank=True)
+    hashtags = models.TextField(blank=True)
     scheduled_time = models.DateTimeField(null=True, blank=True)  # Specific time
-    time_gap = models.CharField(max_length=10, null=True, blank=True)  # e.g., 10m, 1h, 1d
+    # time_gap = models.CharField(max_length=10, null=True, blank=True)  # e.g., 10m, 1h, 1d
     created_at = models.DateTimeField(auto_now_add=True)
     is_posted = models.BooleanField(default=False)
 
