@@ -1,26 +1,54 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './SideBar.css';
 import { NavLink } from 'react-router-dom'
 import '../../pages/CreatPost/CreatPost.css'
+import axios from '../../axiosConfig';
+import { useSection } from '../../Context.jsx';
+import { useAuth } from '../../AuthContext';
 
 
 const SideBar = () => {
+
+  const [userData, setUserData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { section } = useSection();
+  const { logout } = useAuth();
+
+
+
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('http://localhost:8000/userinfo'); // No search query
+        setUserData(response.data);
+        console.log('Fetched accounts:', response.data);
+      } catch (error) {
+        console.error('Failed to fetch accounts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserData();
+  }, []);
+
   return (
-    <> 
-          <div id="topbar">
+    <>
+      <div id="topbar">
         <div className="clearfix">
           <a
             href="javascript:void(0)"
             className="topbar-mobile-menu-icon mdi mdi-menu sf-hidden"
           />
-          <h1 className="topbar-title">Dashboard</h1>
+          <h1 className="topbar-title">{section}</h1>
           <div className="topbar-actions clearfix">
             <div className="item">
-              <a className="link" href="https://app.fanzella.com/post">
+              <NavLink className="link" to="/">
                 <span className="sli sli-plus icon" />
-              </a>
+              </NavLink>
             </div>
-            <div className="item" href="#">
+            {/* <div className="item" href="#">
               <a className="link toggleHeadway">
                 <span className="sli sli-bell icon headway-bell">
                   <span id="HW_badge_cont" className="HW_badge_cont">
@@ -28,7 +56,7 @@ const SideBar = () => {
                   </span>
                 </span>
               </a>
-            </div>
+            </div> */}
             {/* <div className="item" href="#">
               <a className="link" href="https://t.me/fanzellachat">
                 <svg
@@ -87,101 +115,145 @@ const SideBar = () => {
                 />
               </div>
             </div> */}
+            <span className="sli sli-logout icon" onClick={logout} style={{ cursor: 'pointer', marginLeft: '10px' }}></span>
+
             <div className="item">
               <div className="topbar-profile clearfix">
-                <span className="greeting">Hi, User! </span>
+                <NavLink to={'/profile'} className="greeting" style={{ fontWeight: 'bold' }}>
+                  {loading ? 'Loading...' : userData.first_name + ` ${userData.last_name}`}
+
+                </NavLink>
                 <div className="pull-left clearfix context-menu-wrapper">
-                  <a href="javascript:void(0)" className="circle">
-                    <span>U</span>
-                  </a>
- 
+                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdUgbJFcx16VK49Mg4nytGQzLvK85fVRRGwQ&s" style={{ width: '15%' }} className="circle p-pic" >
+
+                  </img>
+
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    
-       <nav>
-    <div className="nav-logo-wrapper">
-    <NavLink  to="/">
-        <img
-          src="main_icon.png"
-          alt="BuzzPulsePoster"
-        />
-      </NavLink>
-    </div>
-    <div className="nav-menu">
-      <div>
-        <ul>
-          <li className="active">
-            <NavLink  to="/">
-              <span className="sli sli-plus menu-icon" />
-              <span className="label sf-hidden">Add Post</span>
-              <span
-                className="tooltip tippy js-tooltip-ready"
-                data-position="right"
-                data-delay={100}
-                data-arrow="true"
-                data-distance={-1}
-                data-tooltipped=""
-                aria-describedby="tippy-tooltip-1"
-                data-original-title="Add Post"
-              />
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/accounts">
-              <span className="sli sli-social-instagram menu-icon" />
-              <span className="label sf-hidden">Accounts</span>
-              <span
-                className="tooltip tippy js-tooltip-ready"
-                data-position="right"
-                data-delay={100}
-                data-arrow="true"
-                data-distance={-1}
-                data-tooltipped=""
-                aria-describedby="tippy-tooltip-5"
-                data-original-title="Accounts"
-              />
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/add_account">
-              <span className="sli sli-social-instagram menu-icon" />
-              <span className="label sf-hidden">Accounts</span>
-              <span
-                className="tooltip tippy js-tooltip-ready"
-                data-position="right"
-                data-delay={100}
-                data-arrow="true"
-                data-distance={-1}
-                data-tooltipped=""
-                aria-describedby="tippy-tooltip-5"
-                data-original-title="Accounts"
-              />
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/statistics">
-              <span className="sli sli-chart menu-icon" />
-              <span className="label sf-hidden">Statistics</span>
-              <span
-                className="tooltip tippy js-tooltip-ready"
-                data-position="right"
-                data-delay={100}
-                data-arrow="true"
-                data-distance={-1}
-                data-tooltipped=""
-                aria-describedby="tippy-tooltip-6"
-                data-original-title="Statistics"
-              />
-            </NavLink>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav></>
+
+      <nav>
+        <div className="nav-logo-wrapper">
+          <NavLink to="/">
+            <img
+              src="main_icon.png"
+              alt="BuzzPulsePoster"
+            />
+          </NavLink>
+        </div>
+        <div className="nav-menu">
+          <div>
+            <ul>
+              <li className={`${section == 'Add Post' ? 'active' : ''}`}>
+                <NavLink to="/">
+                  <span className="sli sli-plus menu-icon" />
+                  <span className="label sf-hidden">Add Post</span>
+                  <span
+                    className="tooltip tippy js-tooltip-ready"
+                    data-position="right"
+                    data-delay={100}
+                    data-arrow="true"
+                    data-distance={-1}
+                    data-tooltipped=""
+                    aria-describedby="tippy-tooltip-1"
+                    data-original-title="Add Post"
+                  />
+                </NavLink>
+              </li>
+              <li className={`${section == 'Add Account' ? 'active' : ''}`}>
+                <NavLink to="/add_account">
+                  <span className="sli sli-social-instagram menu-icon" />
+                  <span className="label sf-hidden">Add Account</span>
+                  <span
+                    className="tooltip tippy js-tooltip-ready"
+                    data-position="right"
+                    data-delay={100}
+                    data-arrow="true"
+                    data-distance={-1}
+                    data-tooltipped=""
+                    aria-describedby="tippy-tooltip-5"
+                    data-original-title="Accounts"
+                  />
+                </NavLink>
+              </li>
+              <li className={`${section == 'Statistics' ? 'active' : ''}`}>
+                <NavLink to="/statistics">
+                  <span className="sli sli-chart menu-icon" />
+                  <span className="label sf-hidden">Statistics</span>
+                  <span
+                    className="tooltip tippy js-tooltip-ready"
+                    data-position="right"
+                    data-delay={100}
+                    data-arrow="true"
+                    data-distance={-1}
+                    data-tooltipped=""
+                    aria-describedby="tippy-tooltip-6"
+                    data-original-title="Statistics"
+                  />
+                </NavLink>
+              </li>
+              <li className={`${section == 'Profile' ? 'active' : ''}`}>
+                <NavLink to="/profile">
+                  {section == 'Profile' ?
+                    <span
+                      className="special-menu-icon"
+                      style={{
+                        backgroundColor: '#A077FF',
+                        color: 'rgb(43 105 233)',
+                        background: '#fff',
+                        fontSize: '25px',
+                        width: 'auto',
+                        padding: '6px 4px 5px 3px',
+                      }}
+                    >
+                      <span className="mdi mdi-account-network"></span>
+                    </span>
+                    :
+                    <span
+                      className="special-menu-icon pf"
+                      style={{
+                        backgroundColor: '#A077FF',
+                        color: '#3c3c3c',
+                        background: '#fff',
+                        fontSize: '25px',
+                        width: 'auto',
+                        padding: '6px 4px 5px 3px',
+                      }}
+                    >
+                      <span className="mdi mdi-account-network"></span>
+                    </span>
+                  }
+                </NavLink>
+              </li>
+              <li className={`${section == 'Cleaner' ? 'active' : ''}`}>
+                <NavLink to="/cleaner">
+                  <span
+                    className="mdi mdi-delete-variant menu-icon"
+                    style={{ fontSize: '22px' }}
+                  ></span>
+
+                  <span className="label">Cleaner</span>
+
+                  <span
+                    className="tooltip tippy js-tooltip-ready"
+                    data-position="right"
+                    data-delay="100"
+                    data-arrow="true"
+                    data-distance="-1"
+                    data-tooltipped=""
+                    aria-describedby="tippy-tooltip-33"
+                    data-original-title="Cleaner"
+                  ></span>
+                </NavLink>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </nav></>
 
   )
 }

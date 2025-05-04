@@ -18,6 +18,29 @@
     gap: 20px;
 }
 
+.topbar-profile .greeting {
+    float: left !important;
+    margin: 5px 30px 0 5px !important;
+}
+
+.topbar-profile {
+    margin-top: 17px !important;
+    display: flex !important;
+    align-content: center !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-direction: row !important;
+}
+
+.pf:hover{
+        color: #2b69e9 !important;
+        transition: 0.25s ease-in-out !important;
+    }
+
+.p-pic:hover{
+ cursor: pointer;
+}
+
 .sidebar-option{
     display: flex;
         align-items: center;
@@ -35,6 +58,17 @@
 .sidebar-option img{
     width: 2vw;
  }
+
+
+ .context-menu-wrapper {
+    position: absolute !important;
+}
+
+.pull-left {
+    float: left !important;
+    right: -155px !important;
+    top: 15px !important;
+}
 
 @media (max-width:900px) {
     .sidebar-option p{

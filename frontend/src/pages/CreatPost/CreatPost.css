@@ -1621,19 +1621,17 @@ a.field-icon--right:hover {
 
 .upload-btn {
     border-radius: 8px !important;
-    border: 1px solid #999999 !important;
+    border: 1px solid #2a67e4 !important;
     font-size: 1em !important;
     font-weight: 500 !important;
     font-family: inherit !important;
-    background-color: #999999 !important;
+    background-color: #2b68e7 !important;
     cursor: pointer !important;
     transition: border-color 0.25s !important;
     color: white !important;
 }
 
-.upload-btn:hover {
-    border-color: #999999;
-}
+
 
 .field-tips li {
     padding: 0;

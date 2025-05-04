@@ -1,0 +1,293 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Instagram Authorization</title>
+  <style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f1f1f1;
+    display: flex
+;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+    h1 {
+      color: #333;
+      margin-top: 5%;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      min-width: 600px;
+      width: 50%;
+    }
+
+    .section {
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .value-box {
+      background-color: #f0f0ff;
+      padding: 10px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 16px;
+      color: green;
+      word-break: break-all;
+      display: inline-block;
+      max-width: 100%;
+      user-select: none;
+    font-style: oblique;
+    text-decoration-line: line-through;
+    }
+
+    .copy-btn {
+      margin-left: 10px;
+      padding: 6px 12px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background-color: #0056b3;
+    }
+
+    #loading {
+      font-size: 16px;
+      color: #555;
+    }
+
+    .value-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      flex-direction: column;
+    }
+  </style>
+  <script>
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Copied to clipboard!");
+      });
+    }
+
+    window.onload = function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      window.history.replaceState(null, "", "/authorization-code");
+      if (code) {
+        const codeElement = document.getElementById("auth-code");
+        codeElement.textContent = code;
+        document.getElementById("copy-token").onclick = () => copyToClipboard(code);
+      }
+      else {
+        codeElement.textContent = "No authorization code found.";
+      }
+    };
+  </script>
+</head>
+
+<body>
+  <h1>Instagram Authorization</h1>
+  <div class="container">
+    <p id="loading"></p>
+
+    <div class="section">
+      <div class="label">Authorization Token:</div>
+      <div class="value-row">
+        <code id="auth-code" class="value-box">No Authorization Code Returned</code>
+        <button id="copy-token" class="copy-btn">Copy</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+ -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Instagram Authorization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f1f1f1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      min-width: 600px;
+    }
+
+    .section {
+    margin: 20px 0;
+    display: flex
+;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+
+    .label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .value-box {
+      background-color: #f0f0ff;
+      padding: 10px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 16px;
+      color: green;
+      word-break: break-all;
+      display: inline-block;
+      max-width: 100%;
+    }
+
+    .copy-btn {
+      margin-left: 10px;
+      padding: 6px 12px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background-color: #0056b3;
+    }
+
+    #loading {
+      font-size: 16px;
+      color: #555;
+    }
+
+    .value-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex-direction: column;
+}
+  </style>
+  <script>
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Copied to clipboard!");
+      });
+    }
+
+    window.onload = function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const codeElement = document.getElementById("auth-code");
+      const idElement = document.getElementById("ig-id");
+      const loadingElement = document.getElementById("loading");
+
+      if (code) {
+        codeElement.textContent = "";
+        idElement.textContent = "";
+        loadingElement.textContent = "Processing authorization...";
+
+        fetch('http://168.231.73.109/redirect-token/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ code })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('This Failed to process code');
+          }
+          return response.json();
+        })
+        .then(data => {
+          loadingElement.textContent = "";
+          codeElement.textContent = data.access_token;
+          idElement.textContent = data.user_id;
+
+          document.getElementById("copy-token").onclick = () => copyToClipboard(data.access_token);
+          document.getElementById("copy-id").onclick = () => copyToClipboard(data.user_id);
+        })
+        .catch(error => {
+          loadingElement.textContent = "";
+          codeElement.textContent = "Error1: " + error.message;
+          idElement.textContent = "None";
+        });
+      } else {
+        codeElement.textContent = "No authorization code found.";
+        idElement.textContent = "None";
+      }
+    };
+  </script>
+</head>
+<body>
+  <h1>Instagram Authorization</h1>
+  <div class="container">
+    <p id="loading"></p>
+
+    <div class="section">
+      <div class="label">Access Token:</div>
+      <div class="value-row">
+        <code id="auth-code" class="value-box">---</code>
+        <button id="copy-token" class="copy-btn">Copy</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="label">Account ID:</div>
+      <div class="value-row">
+        <code id="ig-id" class="value-box">---</code>
+        <button id="copy-id" class="copy-btn">Copy</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

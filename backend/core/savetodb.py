@@ -14,7 +14,7 @@ def connectdb():
         return conn
 
 
-def saveDataInDb(post_type, caption, scheduled_time, created_at, is_posted, instagram_account_id, hashtags, media_urls):
+def saveDataInDb(post_type, caption, scheduled_time, created_at, has_tried, instagram_account_id, hashtags, media_urls, has_posted, logs=None):
     try:
         conn = None
         if conn is None or not conn.is_connected():
@@ -22,10 +22,10 @@ def saveDataInDb(post_type, caption, scheduled_time, created_at, is_posted, inst
         cursor = conn.cursor()
         for media_url, time in zip(media_urls, scheduled_time):
             try:
-                sql = f"""INSERT INTO core_mediapost (post_type, caption, scheduled_time, created_at, is_posted, instagram_account_id, hashtags, media_url) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+                sql = f"""INSERT INTO core_mediapost (post_type, caption, scheduled_time, created_at, has_tried, instagram_account_id, hashtags, media_url, has_posted, logs) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
                 # Data to insert
-                values = (post_type, caption, time, created_at, is_posted, instagram_account_id, hashtags, media_url)
+                values = (post_type, caption, time, created_at, has_tried, instagram_account_id, hashtags, media_url, has_posted, logs)
 
                 # Execute the query
                 cursor.execute(sql, values)
@@ -35,7 +35,7 @@ def saveDataInDb(post_type, caption, scheduled_time, created_at, is_posted, inst
                 conn.commit()
                 print(f"Error inserting data: {e}")
                 
-        print(f"{cursor.rowcount} record inserted.")
+        # print(f"{cursor.rowcount} record inserted.")
 
         if conn is not None and conn.is_connected():
             conn.commit()

@@ -104,6 +104,8 @@ template {
     }
 }
 
+
+
 .clearfix:after,
 .clearfix:before {
     display: table;
@@ -1225,9 +1227,10 @@ nav:hover {
     }
 }
 
-.skeleton {
+.skeleton-bar-char {
     position: relative;
-    padding: 90px 10px 30px 80px
+    padding: 90px 10px 30px 80px;
+    width: 100% !important;
 }
 
 @media screen and (max-width:992px) {

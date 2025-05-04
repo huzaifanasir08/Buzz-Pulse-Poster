@@ -1,6 +1,30 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+} from "recharts";
+import './Statistics.css'
+import axios from "axios";
+import { useSection } from "../../Context";
+
+
 
 export default function Statistics() {
+
+  const [data, setData] = useState([]);
+  const { setSection } = useSection();
+     setSection('Statistics')
+
+  useEffect(() => {
+    axios.get("https://srv809058.hstgr.cloud/statistics").then(res => {
+      setData(res.data.map(item => ({
+        ...item,
+        date: item.date, // ISO date
+      })));
+    });
+  }, []);
+  
+
+
   return (
       <>
   <title>Statistics</title>
@@ -9,10 +33,10 @@ export default function Statistics() {
 
 
 
-  <div className="skeleton" id="statistics">
+  <div className="skeleton-bar-char" id="statistics">
     <div className="container-1200">
       <div className="row clearfix">
-        <form action="https://app.fanzella.com/statistics" method="GET">
+        {/* <form action="https://app.fanzella.com/statistics" method="GET">
           <div className="account-selector clearfix">
             <span className="label">Select Account</span>
             <select className="input input--small" name="account">
@@ -26,197 +50,24 @@ export default function Statistics() {
             type="submit"
             defaultValue="Submit"
           />
-        </form>
-        <div className="clearfix">
-          <div className="col s12 m6 l6 mt-30">
-            <section className="section">
-              <div
-                className="section-content account-summary"
-                data-url="https://app.fanzella.com/statistics?account=152120"
-              >
-                <h2 className="page-secondary-title">
-                  <span className="">Account Summary</span>
-                </h2>
-                <div className="clearfix mt-20 numbers">
-                  <div className="error">
-                    <span className="">Couldn't get user info.</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-          <div className="col s12 m6 m-last l6 l-last mt-30">
-            <section className="section">
-              <div className="section-content">
-                <h2 className="page-secondary-title">
-                  Post Summary{" "}
-                  <span
-                    className="fz-12 color-mid ml-10"
-                    style={{ lineHeight: 20 }}
-                  >
-                    (Last 30 days)
-                  </span>
-                </h2>
-                <div className="clearfix mt-20">
-                  <div className="statistics-numeric">
-                    <span className="number">0 </span>
-                    <span className="label">In Progress</span>
-                  </div>
-                  <div className="statistics-numeric">
-                    <span className="number">0 </span>
-                    <span className="label">Completed</span>
-                  </div>
-                  <div className="statistics-numeric">
-                    <span className="number">0 </span>
-                    <span className="label">Published</span>
-                  </div>
-                  <div className="statistics-numeric">
-                    <span className="number">0 </span>
-                    <span className="label">Failed</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </div>
-        <div className="clearfix">
-          <div className="col s12 m6 l6 mt-30">
-            <section className="section">
-              <div className="section-content">
-                <h2 className="page-secondary-title">Posts</h2>
-                <div className="chart-legends clearfix">
-                  <span className="legend">
-                    <span style={{ backgroundColor: "#5596FF" }} />
-                    In Progress{" "}
-                  </span>
-                  <span className="legend">
-                    <span style={{ backgroundColor: "#6EAFFF" }} />
-                    Published{" "}
-                  </span>
-                  <span className="legend">
-                    <span style={{ backgroundColor: "#88C9FF" }} />
-                    Failed{" "}
-                  </span>
-                </div>
-                <div
-                  className="bar-chart-container chart-container pos-r"
-                  style={{ height: "auto" }}
-                >
-                  <iframe
-                    className="chartjs-hidden-iframe"
-                    tabIndex={-1}
-                    style={{
-                      display: "block",
-                      overflow: "hidden",
-                      border: 0,
-                      margin: 0,
-                      inset: 0,
-                      height: "100%",
-                      width: "100%",
-                      position: "absolute",
-                      zIndex: -1
-                    }}
-                    sandbox="allow-popups allow-top-navigation-by-user-activation"
-                    srcDoc="<html><meta charset=utf-8><meta name=referrer content=no-referrer><meta http-equiv=content-security-policy content=&quot;default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;&quot;>"
-                  />
-                  <canvas
-                    id="bar-chart"
-                    style={{
-                      width: 532,
-                      height: 280,
-                      position: "relative",
-                      display: "block",
-                      backgroundBlendMode: "normal!important",
-                      backgroundClip: "content-box!important",
-                      backgroundPosition: "center center!important",
-                      backgroundColor: "rgba(0,0,0,0)!important",
-                      backgroundImage: "url(data:image/png",
-                      backgroundSize: "100% 100%!important",
-                      backgroundOrigin: "content-box!important",
-                      backgroundRepeat: "no-repeat!important"
-                    }}
-                    width={665}
-                    height={350}
-                  />
-                </div>
-              </div>
-            </section>
-          </div>
-          <div className="col s12 m6 m-last l6 l-last mt-30">
-            <section className="section">
-              <div className="section-content">
-                <h2 className="page-secondary-title">
-                  Posts{" "}
-                  <span
-                    className="fz-12 color-mid ml-10"
-                    style={{ lineHeight: 20 }}
-                  >
-                    (Last 30 days)
-                  </span>
-                </h2>
-                <div className="chart-legends clearfix">
-                  <span className="legend">
-                    <span style={{ backgroundColor: "#3B7CFF" }} />
-                    Completed{" "}
-                  </span>
-                  <span className="legend">
-                    <span style={{ backgroundColor: "#5596FF" }} />
-                    In Progress{" "}
-                  </span>
-                  <span className="legend">
-                    <span style={{ backgroundColor: "#6EAFFF" }} />
-                    Published{" "}
-                  </span>
-                  <span className="legend">
-                    <span style={{ backgroundColor: "#88C9FF" }} />
-                    Failed{" "}
-                  </span>
-                </div>
-                <div
-                  className="doughnut-chart-container chart-container pos-r"
-                  style={{ height: "auto" }}
-                >
-                  <iframe
-                    className="chartjs-hidden-iframe"
-                    tabIndex={-1}
-                    style={{
-                      display: "block",
-                      overflow: "hidden",
-                      border: 0,
-                      margin: 0,
-                      inset: 0,
-                      height: "100%",
-                      width: "100%",
-                      position: "absolute",
-                      zIndex: -1
-                    }}
-                    sandbox="allow-popups allow-top-navigation-by-user-activation"
-                    srcDoc="<html><meta charset=utf-8><meta name=referrer content=no-referrer><meta http-equiv=content-security-policy content=&quot;default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;&quot;>"
-                  />
-                  <canvas
-                    id="doughnut-chart"
-                    style={{
-                      width: 280,
-                      height: 280,
-                      position: "relative",
-                      display: "block",
-                      backgroundBlendMode: "normal!important",
-                      backgroundClip: "content-box!important",
-                      backgroundPosition: "center center!important",
-                      backgroundColor: "rgba(0,0,0,0)!important",
-                      backgroundImage: "url(data:image/png",
-                      backgroundSize: "100% 100%!important",
-                      backgroundOrigin: "content-box!important",
-                      backgroundRepeat: "no-repeat!important"
-                    }}
-                    width={350}
-                    height={350}
-                  />
-                </div>
-              </div>
-            </section>
-          </div>
-        </div>
+        </form> */}
+        <div style={{ width: '100%', height: 500 }}>
+      <ResponsiveContainer>
+        <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="total" fill="#8884d8" name="Total Scheduled" />
+          <Bar dataKey="post_count" fill="#82ca9d" name="Posts" />
+          <Bar dataKey="reel_count" fill="#ffc658" name="Reels" />
+          <Bar dataKey="has_tried" fill="#d88484" name="Tried" />
+          <Bar dataKey="has_posted" fill="#84d8c4" name="Posted" />
+          <Bar dataKey="failed" fill="#ff6b6b" name="Failed" />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
       </div>
     </div>
   </div>

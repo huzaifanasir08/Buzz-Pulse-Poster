@@ -1,21 +1,39 @@
-# tasks.py
+import redis
 from celery import shared_task
 from django.utils import timezone
-from .models import MediaPost  # your model
+from time import sleep
+from . import mysqlconfig, instagram_post
 
+
+# Configure Redis connection with password and host
+redis_client = redis.StrictRedis(
+    host=mysqlconfig.redis_host,     
+    port=mysqlconfig.redis_port,                
+    db=mysqlconfig.redis_db,                     
+    password=mysqlconfig.redis_password,   
+    decode_responses=mysqlconfig.redis_decode_responses      
+)
+
+# Define the task
 @shared_task
 def check_and_post():
-    # now = timezone.now()
-    # posts_to_post = MediaPost.objects.filter(is_posted=False, time_to_post__lte=now)
+    lock_key = "check_and_post_lock"
+    task_timeout = 180  
 
-    # for post in posts_to_post:
+    if redis_client.setnx(lock_key, 'locked'):
         try:
-            # Your posting function here
-            # post_to_instagram(post)  # define this function yourself
-            print('Posting to Instagram...')
-            # Mark as posted
-            # post.is_posted = True
-            # post.save()
 
+            redis_client.expire(lock_key, task_timeout) 
+
+            # Task logic (e.g., posting to Instagram)
+            # print(f"Task started at {timezone.now()}: Posting to Instagram...")
+            instagram_post.post_media()
+            # print(f"Task completed at {timezone.now()}.")
         except Exception as e:
             print(f"Error posting: {e}")
+        finally:
+            # Always release the lock after the task is completed
+            redis_client.delete(lock_key)
+    else:
+        # If the task is already running, skip execution
+        print("Task is already running. Skipping this execution.")

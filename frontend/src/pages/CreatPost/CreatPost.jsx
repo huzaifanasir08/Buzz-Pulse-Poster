@@ -558,12 +558,13 @@
 
 
 // export default CreatPost;
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
 import './CreatPost.css'; // Import your CSS file for styles
 // import main_icon from '../../images/main_icon.png'; // Import your main icon image
 import { X } from 'lucide-react';
 import photo from '../../assets/images/photo.png'; // Import your image icon
 import axios from 'axios';
+import { useSection } from '../../Context';
 
 
 const CreatPost = () => {
@@ -582,6 +583,8 @@ const CreatPost = () => {
   const [dailyTime, setDailyTime] = useState("07:00");  // default time
   const [post_type, setPostType] = useState("post");  // default time
 
+  const { setSection } = useSection();
+  setSection('Add Post')
 
 
   const validateImage = (file) => {
@@ -932,7 +935,7 @@ const CreatPost = () => {
                       <div style={{ height: 538, overflowY: 'auto', padding: '20px 0px 20px 20px' }} className='media-container'>
                         {mediaList.length === 0 ? (<img src={photo} alt="image" style={{ width: '20%', opacity: '.4' }} />) : ''}
 
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6" style={{ overflowY: 'auto' }}>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6" style={{ overflowY: 'auto', paddingRight:'15px' }}>
                           {mediaList.map((media, index) => (
                             <div key={index} className="relative border p-2 rounded shadow">
                               {media.type === "image" ? (
@@ -970,8 +973,8 @@ const CreatPost = () => {
                             {buttonText}
                           </button>
                           <input
-                            type="file"
-                            accept="image/*,video/*"
+                            type="file"                         
+                            accept={post_type === "post" ? "image/*" : "video/*"}
                             multiple
                             onChange={(e) => {
                               handleFileChange(e);

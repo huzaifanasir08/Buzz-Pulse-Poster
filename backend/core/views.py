@@ -1,10 +1,10 @@
 from rest_framework import viewsets
-from .models import MediaPost, MediaFile, InstagramAccount
+from .models import MediaPost, MediaFile, InstagramAccount, ApplicationUser
 from .serializers import MediaPostSerializer, MediaFileSerializer, InstagramAccountSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+import json
 from google.cloud import storage
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -14,19 +14,38 @@ import upload_to_server
 import uuid
 from datetime import datetime, timedelta
 from . import savetodb
+from django.utils.timezone import now, localtime
+import random
+from django.http import HttpResponse
+import requests
+
+
+def user_info(request):
+    if request.method == 'GET':
+        user = ApplicationUser.objects.get(id=1)  # Assuming you want the first user
+        data = {
+            "username": user.username,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "profile_picture": user.profile_picture
+        }
+        return JsonResponse(data)
+    else:
+        return JsonResponse({"error": "GET method required"}, status=405)
 
 
 
 def calculate_next_post_time(selected_time_str, day_ahead):
-    now = datetime.now()
+    utc_now = now()                       
+    eastern_time = localtime(utc_now) 
     
     selected_hour, selected_minute = map(int, selected_time_str.split(":"))
     
     # Create a datetime for today at the selected time
-    next_post = now.replace(hour=selected_hour, minute=selected_minute, second=0, microsecond=0)
+    next_post = eastern_time.replace(hour=selected_hour, minute=selected_minute, second=0, microsecond=0)
     
     # If the selected time already passed today, schedule for tomorrow
-    if next_post <= now:
+    if next_post <= eastern_time:
         next_post += timedelta(days=day_ahead)
     
     return next_post
@@ -85,7 +104,7 @@ def upload_to_gcs(request):
         public_url = blob.public_url
 
         results.append({'filename': uploaded_file.name, 'url': public_url})
-        print(f"Uploaded {uploaded_file.name} to {public_url}")
+        # print(f"Uploaded {uploaded_file.name} to {public_url}")
     
     return JsonResponse({
         'status': 'success',
@@ -96,7 +115,8 @@ def upload_to_gcs(request):
 @csrf_exempt
 @api_view(['POST'])
 def save_post_details(request):
-    now = datetime.now()
+    utc_now = now()                       
+    eastern_time = localtime(utc_now) 
     times = []
     data = request.data
     account_id = data.get('account_id')
@@ -110,18 +130,19 @@ def save_post_details(request):
         schedule_time = data.get('safety_delay_seconds')
         for i in range(len(media_urls)):
             # print("Scheduled time:", scheduled_time)
-            scheduled_time = now + timedelta(hours=schedule_time*i)
+            scheduled_time = eastern_time + timedelta(hours=schedule_time*i, minutes=random.randint(1, 15))
             times.append(scheduled_time)
-        HAS_INSERTED = savetodb.saveDataInDb(post_type, caption, times, now, False, account_id, hashtags, media_urls)
+        logs = ''
+        HAS_INSERTED = savetodb.saveDataInDb(post_type, caption, times, eastern_time, False, account_id, hashtags, media_urls, False, logs)
         if HAS_INSERTED:
-            print("Data inserted successfully")
+            # print("Data inserted successfully")
             return JsonResponse({
                 'status': 'success',
                 # 'account_username':account_username,
                 'message': 'Posts saved successfully'
             })
         else:
-            print("Data insertion failed")
+            # print("Data insertion failed")
             return JsonResponse({
                 'status': 'error',
                 # 'account_username':account_username,
@@ -135,9 +156,8 @@ def save_post_details(request):
             mysql_format_date = dt.strftime("%Y-%m-%d %H:%M:%S")
 
             times.append(mysql_format_date)
-        HAS_INSERTED = savetodb.saveDataInDb(post_type, caption, times, now, False, account_id, hashtags, media_urls)
+        HAS_INSERTED = savetodb.saveDataInDb(post_type, caption, times, eastern_time, False, account_id, hashtags, media_urls)
         if HAS_INSERTED:
-            print("Data inserted successfully")
             return JsonResponse({
                 'status': 'success',
                 # 'account_username':account_username,
@@ -145,20 +165,12 @@ def save_post_details(request):
                 'time': times
             })
         else:
-            print("Data insertion failed")
+            # print("Data insertion failed")
             return JsonResponse({
                 'status': 'error',
                 # 'account_username':account_username,
                 'message': 'Posts not saved'
             })
-    
-
-
-
-    # return JsonResponse({
-    #     'status': 'success',
-    #     'account_username':account_username
-    # })
 
 def accounts_list(request):
     if request.method == 'GET':
@@ -175,3 +187,126 @@ def accounts_list(request):
         return JsonResponse(data)
     else:
         return JsonResponse({"error": "GET method required"}, status=405)
+    
+
+
+@api_view(["GET"])
+def media_post_stats(request):
+    # Group by date
+    # data = MediaPost.objects.annotate(date=TruncDate('scheduled_time')).values('date').annotate(
+    #     total=Count('id'),
+    #     post_count=Count('id', filter=Q(post_type='post')),
+    #     reel_count=Count('id', filter=Q(post_type='reel')),
+    #     tried=Count('id', filter=Q(has_tried=True)),
+    #     posted=Count('id', filter=Q(has_posted=True)),
+    #     failed=Count('id', filter=Q(has_tried=True, has_posted=False))
+    # ).order_by('date')
+    data = [
+        {
+            'date': '2025-04-28',
+            'total': 14,
+            'post_count': 7,
+            'reel_count': 7,
+            'has_tried': 9,
+            'has_posted': 5,
+            'failed': 4,
+        },
+        {
+            'date': '2025-04-29',
+            'total': 10,
+            'post_count': 9,
+            'reel_count': 1,
+            'has_tried': 2,
+            'has_posted': 10,
+            'failed': 1,
+        },
+        {
+            'date': '2025-04-30',
+            'total': 14,
+            'post_count': 4,
+            'reel_count': 13,
+            'has_tried': 9,
+            'has_posted': 6,
+            'failed': 5,
+        },
+        {
+            'date': '2025-05-01',
+            'total': 13,
+            'post_count': 2,
+            'reel_count': 12,
+            'has_tried': 5,
+            'has_posted': 3,
+            'failed': 2,
+        },
+        {
+            'date': '2025-01-02',
+            'total': 17,
+            'post_count': 10,
+            'reel_count': 3,
+            'has_tried': 2,
+            'has_posted': 6,
+            'failed': 7,
+        },
+    ]
+
+    return Response(data)
+
+@csrf_exempt
+def oauth_redirect(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        code = data.get('code')
+        print(code)
+        if code:
+            client_id = 1385265725991934
+            client_secret = '442ae491972249afaa38ca0a60dce325' 
+            grant_type = 'authorization_code'
+            redirect_uri = 'https://scheduleinstagramposts.com/auth.html'
+            url = 'https://api.instagram.com/oauth/access_token'
+
+            
+            
+            data = {
+                'client_id': client_id,
+                'client_secret': client_secret,  
+                'grant_type': grant_type,
+                'redirect_uri': redirect_uri,  # Must match the one used in auth
+                'code': code
+            }
+            print(data)
+            response = requests.post(url, data=data)
+            if response.status_code == 200:
+                res_data = response.json()
+                print(res_data)
+                try:
+                    accessToken = res_data.get('access_token')
+                    userID = res_data.get('user_id')
+                    return JsonResponse({
+                    'status': 'success',
+                    'access_token': accessToken,
+                    'user_id': userID
+                })
+
+                except Exception as e:
+                    print(f'Error in getting auth code: {e}')
+                    return JsonResponse({
+                    'status': f'Error: {e}',
+                    'access_token': 'No authorization code found',
+                    'user_id': "None"
+                })
+            else:
+                return JsonResponse({
+                    'status': 'Something went wrong',
+                    'access_token': 'No authorization code found',
+                    'user_id': 'None'
+                })
+        else:
+            return JsonResponse({
+                    'status': 'No authorization code found',
+                    'access_token': 'No authorization code found',
+                    'user_id': 'None'
+                })
+        
+
+
+        

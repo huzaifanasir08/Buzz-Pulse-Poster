@@ -1,12 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import './AddAccount.css'; // Import your CSS file for styles
+import { useSection } from '../../Context.jsx';
+
 
 export default function AddAccount() {
   const [formData, setFormData] = useState({
     username: '',
     access_token: '',
-    proxy: ''
+    proxy: '',
+    account_id: ''
   });
+  const proxyUrl = "Example: {username}:{password}@{proxy_host}:{proxy_port}";
+  const url = 'https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=1385265725991934&redirect_uri=https://scheduleinstagramposts.com/auth.html&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights';
+
+   const { setSection } = useSection();
+   setSection('Add Account')
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,7 +33,7 @@ export default function AddAccount() {
 
       if (res.ok) {
         alert('Account added successfully!');
-        setFormData({ username: '', access_token: '', proxy: '' });
+        setFormData({ username: '', access_token: '', proxy: '', account_id: '' });
       } else {
         const errData = await res.json();
         alert('Error: ' + JSON.stringify(errData));
@@ -41,99 +49,121 @@ export default function AddAccount() {
 
   return (
     <>
-      <div className="skeleton proxy-manager-pro" id="pmp-account">
+      <div className="skeleton proxy-manager-pro in-form-sk" id="pmp-account">
         <div className="section-header back-button-wh none pt-10 sf-hidden"></div>
-        <form
+        
+        <div className="container-1200 add-acc">
+          <div className="row clearfix in-row">
+            <div className="col s12 m8 l4 mb-20 in-form">
+              <section className="section">
+           
+                <div className="js-login">
+                  <button
+                    style={{ padding: '10px 20px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '5px' }}
+                    onClick={() => window.open(url, '_blank')}
+                  >
+                    Get Access Token & Id
+                  </button>
+                </div>
+                <div className="js-2fa js-challenge js-browser-extension none sf-hidden"></div>
+                <div className="js-edit-mode-fields none sf-hidden"></div>
+              </section>
+            </div>
+          </div>
+          <form
           className="js-ajax-form"
           onSubmit={handleSubmit}
           autoComplete="off"
         >
-          <div className="container-1200">
-            <div className="row clearfix">
-              <div className="col s12 m8 l4 mb-20">
-                <section className="section">
-                  <div className="section-content">
-                    <div
-                      className="form-result"
-                      data-fetch-msg="Detecting username..."
-                    ></div>
-                    <div className="js-login" style={{ textAlign: 'left' }}>
+          <div className="row clearfix ">
+            <div className="col s12 m8 l4 mb-20 in-form">
+              <section className="section">
+                <div className="section-content">
+                  <div
+                    className="form-result"
+                    data-fetch-msg="Detecting username..."
+                  ></div>
+                  <div className="js-login" style={{ textAlign: 'left' }}>
+                    <div className="mb-20">
+                      <label className="form-label">Username</label>
+                      <input
+                        className="input username-box"
+                        name="username"
+                        type="text"
+                        defaultValue=""
+                        value={formData.username}
+                        onChange={handleChange}
+                        placeholder="Enter username"
+                        maxLength={80}
+                      />
+                    </div>
+                    <div className="mb-20">
+                      <label className="form-label">Account ID</label>
+                      <input
+                        className="input username-box"
+                        name="account_id"
+                        type="text"
+                        defaultValue=""
+                        value={formData.account_id}
+                        onChange={handleChange}
+                        placeholder="Enter account id"
+                        maxLength={80}
+                      />
+                    </div>
+                    <div className="mb-20">
+                      <label className="form-label">Access Token</label>
+                      <input
+                        className="input password-box"
+                        name="access_token"
+                        type="text"
+                        value={formData.access_token}
+                        onChange={handleChange}
+                        placeholder="Enter Access Token"
+                      />
+                    </div>
+
+                    <div className="clearfix pmpa-web none sf-hidden"></div>
+
+                    <div className="clearfix pmpa-proxy">
                       <div className="mb-20">
-                        <label className="form-label">Username</label>
+                        <label className="form-label">Proxy</label>
                         <input
-                          className="input username-box"
-                          name="username"
+                          className="input"
+                          name="proxy"
                           type="text"
+                          value={formData.proxy}
+                          onChange={handleChange}
                           defaultValue=""
-                          value={formData.username}
-                          onChange={handleChange}
-                          placeholder="Enter username"
-                          maxLength={80}
+                          placeholder="Proxy for this account"
                         />
-                      </div>
-                      <div className="mb-20">
-                        <label className="form-label">Access Token</label>
-                        <input
-                          className="input password-box"
-                          name="access_token"
-                          type="text"
-                          value={formData.access_token}
-                          onChange={handleChange}
-                          placeholder="Enter Access Token"
-                        />
-                      </div>
-
-                      <div className="clearfix pmpa-web none sf-hidden"></div>
-
-                      <div className="clearfix pmpa-proxy">
-                        <div className="mb-20">
-                          <label className="form-label">Proxy</label>
-                          <input
-                            className="input"
-                            name="proxy"
-                            type="text"
-                            value={formData.proxy}
-                            onChange={handleChange}
-                            defaultValue=""
-                            placeholder="Proxy for this account"
-                          />
-                          <ul className="field-tips">
-                            <li>
-                              Proxy should match following pattern: http://ip:port
-                              OR http://username:password@ip:port
-                            </li>
-                            <li>
-                              Socks5 proxy pattern:
-                              socks5://username:password@ip:port OR
-                              socks5h://username:password@ip:port
-                            </li>
-                            <li>
-                              It's recommended to to use a proxy belongs to the
-                              country where you've logged in this acount in
-                              Instagram's official app or website.
-                            </li>
-                          </ul>
-                        </div>
+                        <ul className="field-tips">
+                          <li>
+                            Proxy should match following pattern without http:// or https://:
+                            <br />
+                            {proxyUrl}
+                          </li>
+                        </ul>
                       </div>
                     </div>
-                    <div className="js-browser-extension none sf-hidden"></div>
-                    <div className="js-2fa none sf-hidden"></div>
-                    <div className="js-challenge none sf-hidden"></div>
                   </div>
-                  <div className="js-login">
-                    <input
-                      className="fluid button button--footer js-login"
-                      type="submit"
-                      defaultValue="Add account"
-                    />
-                  </div>
-                  <div className="js-2fa js-challenge js-browser-extension none sf-hidden"></div>
-                  <div className="js-edit-mode-fields none sf-hidden"></div>
-                </section>
-              </div>
+                  <div className="js-browser-extension none sf-hidden"></div>
+                  <div className="js-2fa none sf-hidden"></div>
+                  <div className="js-challenge none sf-hidden"></div>
+                </div>
+                <div className="js-login">
+                  <input
+                    className="fluid button button--footer js-login"
+                    type="submit"
+                    defaultValue="Add account"
+                  />
+                </div>
+                <div className="js-2fa js-challenge js-browser-extension none sf-hidden"></div>
+                <div className="js-edit-mode-fields none sf-hidden"></div>
+              </section>
             </div>
           </div>
         </form>
+        </div>
       </div>
       <div id="toasts" />
       <div id="toasts" />

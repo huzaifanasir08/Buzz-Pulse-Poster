@@ -48,6 +48,16 @@ select {
     -webkit-appearance: button
 }
 
+.add-acc {
+    /* width: 80% !important; */
+    display: flex !important;
+    flex-direction: row !important;
+    align-content: center !important;
+    justify-content: space-evenly;
+    align-items: center !important;
+    margin: auto 0px;
+}
+
 template {
     display: none
 }
@@ -57,6 +67,19 @@ template {
     margin-right: auto;
     margin-left: auto
 }
+.in-form-sk{
+    padding: 80px 10px 30px 0px !important;
+    width: 100% !important;
+}
+
+.in-row{
+    margin: auto 0px;
+}
+
+.in-form{
+width: 100% !important;
+}
+
 
 .container-1200 {
     max-width: 1240px
