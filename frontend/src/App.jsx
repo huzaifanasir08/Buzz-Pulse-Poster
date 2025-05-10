@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom'; // Add useLocation
 import './App.css';
 import CreatPost from './pages/CreatPost/CreatPost.jsx';
 import SideBar from './components/SideBar/SideBar.jsx';
@@ -12,10 +12,15 @@ import { AuthProvider } from './AuthContext.jsx';
 import PrivateRoute from './PrivateRoute.jsx';
 
 function App() {
+  const location = useLocation(); // Get current location
+
+  const hideSidebarRoutes = ['/login']; // Add more paths here if needed
+  const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname);
+
   return (
     <AuthProvider>
       <ContextProvider>
-        <SideBar />
+        {!shouldHideSidebar && <SideBar />} {/* Conditionally show SideBar */}
         <div className="pages">
           <Routes>
             <Route path="/login" element={<Login />} />

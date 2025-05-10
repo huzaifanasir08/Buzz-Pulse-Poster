@@ -2,7 +2,7 @@ import redis
 from celery import shared_task
 from django.utils import timezone
 from time import sleep
-from . import mysqlconfig, instagram_post
+from . import mysqlconfig, instagram_post, refresh_token
 
 
 # Configure Redis connection with password and host
@@ -18,7 +18,7 @@ redis_client = redis.StrictRedis(
 @shared_task
 def check_and_post():
     lock_key = "check_and_post_lock"
-    task_timeout = 180  
+    task_timeout = 2000
 
     if redis_client.setnx(lock_key, 'locked'):
         try:
@@ -26,8 +26,9 @@ def check_and_post():
             redis_client.expire(lock_key, task_timeout) 
 
             # Task logic (e.g., posting to Instagram)
-            # print(f"Task started at {timezone.now()}: Posting to Instagram...")
-            instagram_post.post_media()
+            instagram_post.post()
+            refresh_token.refresh_token()
+   
             # print(f"Task completed at {timezone.now()}.")
         except Exception as e:
             print(f"Error posting: {e}")

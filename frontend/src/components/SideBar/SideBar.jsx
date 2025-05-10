@@ -13,7 +13,8 @@ const SideBar = () => {
   const [loading, setLoading] = useState(true);
   const { section } = useSection();
   const { logout } = useAuth();
-
+  const [userName, setUserName] = useState()
+  const url = 'http://127.0.0.1:8000/admin/core/mediapost/'
 
 
 
@@ -21,17 +22,24 @@ const SideBar = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:8000/userinfo'); // No search query
+        const response = await axios.get('http://localhost:8000/userinfo');
         setUserData(response.data);
-        console.log('Fetched accounts:', response.data);
+  
+        const fullName = `${response.data.first_name} ${response.data.last_name}`;
+        const trimmedName = fullName.length > 10 ? fullName.slice(0, 10) + '.' : fullName;
+        setUserName(trimmedName);
+  
+        console.log('Fetched user info:', response.data);
       } catch (error) {
-        console.error('Failed to fetch accounts:', error);
+        console.error('Failed to fetch user info:', error);
       } finally {
         setLoading(false);
       }
     };
+  
     fetchUserData();
   }, []);
+  
 
   return (
     <>
@@ -43,10 +51,11 @@ const SideBar = () => {
           />
           <h1 className="topbar-title">{section}</h1>
           <div className="topbar-actions clearfix">
-            <div className="item">
-              <NavLink className="link" to="/">
-                <span className="sli sli-plus icon" />
-              </NavLink>
+            
+            <div className="item" style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
+            <button className='btn-lg' onClick={logout} style={{ marginLeft: '10px' }}>
+  Logout
+</button>
             </div>
             {/* <div className="item" href="#">
               <a className="link toggleHeadway">
@@ -115,12 +124,12 @@ const SideBar = () => {
                 />
               </div>
             </div> */}
-            <span className="sli sli-logout icon" onClick={logout} style={{ cursor: 'pointer', marginLeft: '10px' }}></span>
+            
 
             <div className="item">
               <div className="topbar-profile clearfix">
                 <NavLink to={'/profile'} className="greeting" style={{ fontWeight: 'bold' }}>
-                  {loading ? 'Loading...' : userData.first_name + ` ${userData.last_name}`}
+                  {loading ? 'Loading...' : userName}
 
                 </NavLink>
                 <div className="pull-left clearfix context-menu-wrapper">
@@ -228,8 +237,8 @@ const SideBar = () => {
                   }
                 </NavLink>
               </li>
-              <li className={`${section == 'Cleaner' ? 'active' : ''}`}>
-                <NavLink to="/cleaner">
+              <li onClick={() => window.open(url, '_blank')} className={`${section == 'Cleaner' ? 'active' : ''}`}>
+                <NavLink >
                   <span
                     className="mdi mdi-delete-variant menu-icon"
                     style={{ fontSize: '22px' }}

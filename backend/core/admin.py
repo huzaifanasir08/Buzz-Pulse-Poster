@@ -1,54 +1,49 @@
 from django.contrib import admin
 from django.contrib import messages
-from django.core.management import call_command
-from .models import InstagramAccount, MediaPost, MediaFile, ApplicationUser
+
+from .models import InstagramAccount, MediaPost, ApplicationUser
 from .postingtask import check_and_post
-import subprocess
 
-class ApplicationUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'first_name', 'last_name', 'password')
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import Group
+from django.utils.translation import gettext_lazy as _
+from django import forms
+
+class ApplicationUserAdmin(BaseUserAdmin):
+    model = ApplicationUser
+    list_display = ('username', 'is_staff', 'is_superuser')
     search_fields = ('username',)
-    list_filter = ('id',)
+    ordering = ('username',)
 
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'profile_picture')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        (_('Important dates'), {'fields': ('last_login',)}),
+    )
 
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'password1', 'password2', 'is_staff', 'is_superuser'),
+        }),
+    )
+
+check_and_post.delay()
+      
+
+  
 class InstagramAccountAdmin(admin.ModelAdmin):
-    list_display = ('id', 'username', 'account_id', 'access_token', 'proxy', 
-                    'free_for_posting')
+    list_display = ('id', 'username', 'account_id', 'proxy')
     search_fields = ('username',)
-    list_filter = ('id',)
-    actions = [
-        'trigger_run_task',
-    ]
+    list_filter = ('free_for_posting',)
 
-    def trigger_run_task(self, request, queryset):
-        check_and_post.delay()
-        self.message_user(request, "The Task has been triggered.")
-    
-    trigger_run_task.short_description = "Trigger Task"
+class MediaPostAdmin(admin.ModelAdmin):
+    list_display = ('post_type', 'scheduled_time', 'has_tried', 'has_posted', 'file_deleted', 'logs')
+    search_fields = ('has_posted',)
+    list_filter = ('scheduled_time',)
 
-
-# Register the ScrapingStatus model with the updated admin class
+# Register models
+admin.site.register(ApplicationUser, ApplicationUserAdmin)
 admin.site.register(InstagramAccount, InstagramAccountAdmin)
-admin.site.register(ApplicationUser)
-
-
-
-
-# class InstagramAccountAdmin(admin.ModelAdmin):
-#     list_display = ('id', 'username', 'account_id', 'access_token', 'proxy', 
-#                     'free_for_posting')
-#     search_fields = ('username',)
-#     list_filter = ('id',)
-#     actions = [
-#         'trigger_run_task',
-#     ]
-
-#     def trigger_run_task(self, request, queryset):
-#         check_and_post.delay()
-#         self.message_user(request, "The Task has been triggered.")
-    
-#     trigger_run_task.short_description = "Trigger Task"
-
-
-# # Register the ScrapingStatus model with the updated admin class
-# admin.site.register(InstagramAccount, InstagramAccountAdmin)
+admin.site.register(MediaPost, MediaPostAdmin)

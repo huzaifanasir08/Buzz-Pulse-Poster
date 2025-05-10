@@ -1,5 +1,9 @@
-// Near top
+import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+const AuthContext = createContext();
+
+export const useAuth = () => useContext(AuthContext); // ✅ THIS IS NEEDED
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
@@ -14,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const login = (newToken) => setToken(newToken);
+
   const logout = () => {
     setToken(null);
     navigate('/login');

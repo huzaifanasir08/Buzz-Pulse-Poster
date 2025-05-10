@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from ...dm import bg_task
+# from ...dm import refreshToken
 import asyncio
 
 class Command(BaseCommand):
@@ -7,6 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         self.stdout.write(self.style.SUCCESS('Starting background task...'))
-        bg_task()
+        # token = refreshToken()
+        # print(token)
 
 

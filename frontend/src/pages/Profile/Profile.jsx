@@ -1,69 +1,135 @@
-import React, { useState, useContext } from 'react'
-import './Profile.css'; // Import your CSS file for styles
+import React, { useEffect, useState } from 'react';
+import './Profile.css';
+import axios from 'axios';
 import { useSection } from '../../Context';
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Profile() {
-
   const { setSection } = useSection();
-     setSection('Profile')
+  setSection('Profile');
 
+  const [profileData, setProfileData] = useState({
+    first_name: '',
+    last_name: ''
+  });
+
+  const [originalData, setOriginalData] = useState({});
+  const [isChangePasswordChecked, setIsChangePasswordChecked] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [isChanged, setIsChanged] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const url = 'http://127.0.0.1:8000/admin/password_change/'
+
+  // Fetch profile data from backend
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get('http://127.0.0.1:8000/profile'); // 🔁 Update endpoint
+        setProfileData(res.data);
+        setOriginalData(res.data);
+      } catch (err) {
+        console.error('Failed to load profile:', err);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  // Check if form values have changed
+  useEffect(() => {
+    const changed =
+      profileData.first_name !== originalData.first_name ||
+      profileData.last_name !== originalData.last_name ||
+      (isChangePasswordChecked && newPassword !== '');
+
+    setIsChanged(changed);
+  }, [profileData, originalData, newPassword, isChangePasswordChecked]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProfileData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handlePasswordCheckboxChange = () => {
+    setIsChangePasswordChecked(!isChangePasswordChecked);
+    setNewPassword('');
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const toastId = toast.loading("Saving Details...");
+    try {
+      const payload = { ...profileData };
+
+      await axios.put('http://127.0.0.1:8000/profile/', payload); // 🔁 Update endpoint
+      setOriginalData(profileData); // Reset original data
+      setIsChangePasswordChecked(false);
+      setNewPassword('');
+      toast.update(toastId, {
+        render: "Profile updated successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+    } catch (error) {
+      toast.update(toastId, {
+        render: "Failed to update profile!",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
-      <div className="skeleton proxy-manager-pro in-form-sk" id="pmp-account">
-        <div className="section-header back-button-wh none pt-10 sf-hidden"></div>
-        
-      </div>
-      <div id="toasts" />
-      <div id="toasts" />
-      <div
-        id="HW_frame_cont"
-        className="HW_frame_cont HW_bottom"
-        data-account="xGabrJ"
-      >
-        <iframe
-          id="HW_frame"
-          className="HW_frame"
-          referrerPolicy="strict-origin"
-          sandbox="allow-popups allow-top-navigation-by-user-activation"
-          tabIndex={-1}
-          aria-hidden="true"
-          srcDoc='<!DOCTYPE html> <html><meta charset=utf-8>
-<style media=screen>*{box-sizing:border-box}*,body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;-moz-osx-font-smoothing:grayscale}html,body{height:100vh}html{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol;text-size-adjust:100%}body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol;background:#fff;padding:0;margin:0;font-size:13px;overflow:hidden}h3{padding:0}.outercont .cont{overflow:hidden;position:relative;height:100vh;width:100vw}.outercont .innercont{transform:translate(0);position:relative;overflow:hidden;will-change:left;transition:left .3s;width:200vw;height:100%;left:0}.outercont .innercont .logList{overflow-y:auto}.outercont .innercont #index,.outercont .innercont #details{width:100vw;position:absolute}.outercont .innercont #index{left:0}.outercont .innercont #details{left:100vw}.outercont .innercont #index{height:100vh;display:flex;flex-direction:column}.outercont .innercont #index .logList{overflow-x:hidden;overscroll-behavior:contain}.outercont .innercont #index .title{margin:0 3px}.outercont .innercont h3.title{text-align:center;font-weight:600;font-size:14px}.outercont .innercont .topBar{position:relative}.outercont .innercont .topBar{border-bottom:solid 1px;padding:15px 30px}.outercont .innercont .footer{color:#a8a8a8;font-size:12px;text-align:center;border-top:solid 1px;height:35px;line-height:35px;border-radius:0 0 4px 4px}.outercont .innercont .footer a{color:#a8a8a8}.ltr{direction:ltr}</style>
-<meta name=referrer content=no-referrer><meta http-equiv=content-security-policy content="default-src &apos;none&apos;; font-src &apos;self&apos; data:; img-src &apos;self&apos; data:; style-src &apos;unsafe-inline&apos;; media-src &apos;self&apos; data:; script-src &apos;unsafe-inline&apos; data:; object-src &apos;self&apos; data:; frame-src &apos;self&apos; data:;"></head>
- <body class="ltr light-mode right bottom" style=background-color:rgb(255,255,255)>
- <div class=outercont>
- <div class=cont>
- <div class=innercont style=color:rgb(34,44,54)>
- <div id=index>
- <div class=topBar style=border-color:rgb(241,241,241);background-color:rgb(255,255,255)>
- <h3 class=title>Latest changes</h3>
- </div>
- <div class=logList>
- 
- </div> 
- <div class=footer style=border-color:rgb(241,241,241);background-color:rgb(252,252,252)>
- <a target=_blank rel="noopener noreferrer" href="https://headwayapp.co/alphanouveau-changelog?utm_medium=widget">Alphanouveau changelog</a>
- powered by <a target=_blank href="https://headwayapp.co/?utm_medium=widget&amp;utm_source=alphanouveau" rel="noopener noreferrer">Headway</a>
- </div>
-</div> 
-<div id=details>
- 
-</div> 
- </div> 
- </div> 
- </div> 
-'
-        />
-      </div>
-      <veepn-guard-alert>
-        <template shadowrootmode="open" />
-      </veepn-guard-alert>
-      <veepn-lock-screen>
-        <template shadowrootmode="open" />
-      </veepn-lock-screen>
-    </>
+    <ToastContainer />
+      <title>Profile</title>
+      <div className="profile-form-container">
+        <h2 className="form-title">Profile Settings</h2>
+        <form className="profile-form" onSubmit={handleSave}>
+          {['first_name', 'last_name'].map((field) => (
+            <div className="form-group" key={field}>
+              <label>{field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}:</label>
+              <input
+                type={field === 'email' ? 'email' : 'text'}
+                name={field}
+                value={profileData[field]}
+                onChange={handleInputChange}
+              />
+            </div>
+          ))}
 
-  )
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                style={{ width: '15px' }}
+                type="checkbox"
+                checked={isChangePasswordChecked}
+                onChange={handlePasswordCheckboxChange}
+              />
+              Change Password
+            </label>
+          </div>
+
+          {isChangePasswordChecked && (
+            <div className="form-group">
+              <label className='pas-lble' onClick={() => window.open(url, '_blank')}>Password Manager →</label>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="submit-btn"
+            disabled={!isChanged || loading}
+          >
+            {loading ? 'Saving...' : 'Save Changes'}
+          </button>
+        </form>
+      </div>
+    </>
+  );
 }

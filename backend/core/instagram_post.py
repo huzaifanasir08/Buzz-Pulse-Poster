@@ -1,191 +1,9 @@
-# import requests
-# import time
-
-# # Proxy and credentials
-# proxy_host = "146.0.75.178"
-# proxy_port = "20180"
-# username = "user80"
-# password = "SgpEMjcw"
-# change_ip_url = "http://146.0.75.178:20480/changeip/client/73041950421522020542"
-
-# # Proxy config
-# proxies = {
-#     "http": f"http://{username}:{password}@{proxy_host}:{proxy_port}",
-#     "https": f"http://{username}:{password}@{proxy_host}:{proxy_port}"
-# }
-
-# # Your API target
-# target_url = "https://api.example.com/data"
-
-# # Total requests
-# total_requests = 10  # Change this as needed
-
-# for i in range(total_requests):
-#     # Rotate IP every 2 requests (except before the very first one)
-#     if i % 2 == 0 and i != 0:
-#         print(f"\nRotating IP before request {i + 1}...")
-#         try:
-#             change_response = requests.get(change_ip_url, timeout=10)
-#             if change_response.ok:
-#                 print("IP rotation triggered.")
-#             else:
-#                 print("Failed to rotate IP.")
-#         except Exception as e:
-#             print("Rotation error:", e)
-        
-#         time.sleep(6)  # Wait for IP to change
-
-#     # Make the API request
-#     print(f"\nRequest {i + 1}: Sending to {target_url}")
-#     try:
-#         response = requests.get(target_url, proxies=proxies, timeout=15)
-#         print("Status:", response.status_code)
-#         print("Response:", response.text[:200])
-#     except Exception as e:
-#         print("Request error:", e)
-
-
-
-
-
-# import requests
-# import time
-
-# # Proxy and credentials
-# proxy_host = "146.0.75.178"
-# proxy_port = "20180"
-# username = "user80"
-# password = "SgpEMjcw"
-# change_ip_url = "http://146.0.75.178:20480/changeip/client/73041950421522020542"
-
-# # Proxy config
-# proxies = {
-#     "http": f"http://{username}:{password}@{proxy_host}:{proxy_port}",
-#     "https": f"http://{username}:{password}@{proxy_host}:{proxy_port}"
-# }
-
-# # Your API target
-# target_url = "https://api.example.com/data"
-
-# # Total requests
-# total_requests = 10  # Change this as needed
-
-# for i in range(total_requests):
-#     # Rotate IP every 2 requests (except before the very first one)
-#     if i % 2 == 0 and i != 0:
-#         print(f"\nRotating IP before request {i + 1}...")
-#         try:
-#             change_response = requests.get(change_ip_url, timeout=10)
-#             if change_response.ok:
-#                 print("IP rotation triggered.")
-#             else:
-#                 print("Failed to rotate IP.")
-#         except Exception as e:
-#             print("Rotation error:", e)
-        
-#         time.sleep(6)  # Wait for IP to change
-
-#     # Make the API request
-#     print(f"\nRequest {i + 1}: Sending to {target_url}")
-#     try:
-#         response = requests.get(target_url, proxies=proxies, timeout=15)
-#         print("Status:", response.status_code)
-#         print("Response:", response.text[:200])
-#     except Exception as e:
-#         print("Request error:", e)
-
-
-
-
-# import requests
-# import time
-
-
-# # Proxy and credentials
-# proxy_host = "146.0.75.178"
-# proxy_port = "20180"
-# username = "user80"
-# password = "SgpEMjcw"
-# change_ip_url = "http://146.0.75.178:20480/changeip/client/73041950421522020542"
-
-# # Instagram API URLs
-# upload_url = "https://graph.instagram.com/v22.0/17841473540671347/media"
-# publish_url = "https://graph.instagram.com/v22.0/17841473540671347/media_publish"
-
-# # Access token
-# access_token = "IGAATr5EZBEaZC5BZAE9lc20xV3lzUUp2eHBGTTQzN2xQMkh6WkZAHbm41SjllM1RNbWNLYktfS0F5bHhLeV82SW0yZAlZAELS1hNHBzODdMRmVTQ0JjbzBrRU1KNkNHTHJGTnVQaUJMVjZAwQzhkQldLSkVRZADZAUNUk2MDc4UGFWT0g5NAZDZD"
-
-# # Proxy config
-# proxies = {
-#     "http": f"http://{username}:{password}@{proxy_host}:{proxy_port}",
-#     "https": f"http://{username}:{password}@{proxy_host}:{proxy_port}"
-# }
-
-# # Payload base
-# media_payload = {
-#     "image_url": "https://storage.googleapis.com/postingmedia/Images/0561f699-19ba-443c-8c9f-0a6653ae2a7b_Screenshot%202025-03-01%20024124.png",   # Replace with your image
-#     "is_carousel_item": "false",
-#     "caption": "let's go! for a new adventure!",
-#     "access_token": access_token
-# }
-
-
-
-
-
-
-
-# # Number of post cycles
-# post_count = 1
-
-# for i in range(post_count):
-#     if i != 0:
-#         print(f"\n🔄 Rotating IP before request group {i + 1}...")
-#         try:
-#             rotate = requests.get(change_ip_url, timeout=10)
-#             if rotate.ok:
-#                 print("✅ IP rotation triggered.")
-#             else:
-#                 print("❌ Failed to rotate IP.")
-#         except Exception as e:
-#             print("Rotation error:", e)
-#         time.sleep(6)
-
-#     print(f"\n🚀 Request Set {i + 1}: Uploading media...")
-#     try:
-#         upload_resp = requests.post(upload_url, data=media_payload, proxies=proxies, timeout=20)
-#         print("Upload status:", upload_resp.status_code)
-#         print("Upload response:", upload_resp.text)
-
-#         if upload_resp.ok:
-#             creation_id = upload_resp.json().get("id")
-#             if not creation_id:
-#                 print("❌ No creation_id returned. Skipping publish step.")
-#                 continue
-
-#             publish_payload = {
-#                 "creation_id": creation_id,
-#                 "access_token": access_token
-#             }
-
-#             print("📤 Publishing media with creation_id:", creation_id)
-#             publish_resp = requests.post(publish_url, data=publish_payload, proxies=proxies, timeout=20)
-#             print("Publish status:", publish_resp.status_code)
-#             print("Publish response:", publish_resp.text)
-#         else:
-#             print("❌ Upload failed. Skipping publish.")
-
-#     except Exception as e:
-#         print("Request error:", e)
-
-
-
-
 import requests
 import time
 from .models import MediaPost
 from django.utils.timezone import now, localtime
-
+from . import updateInstaAcc, delete_from_gcs
+import pytz
 
 
 
@@ -194,7 +12,13 @@ def post_reel(account_id, access_token, media_payload, proxies):
             # Instagram API URLs
             upload_url = f"https://graph.instagram.com/v22.0/{account_id}/media"
             publish_url = f"https://graph.instagram.com/v22.0/{account_id}/media_publish"
+            change_ip_url = "http://146.0.75.178:20480/changeip/client/73041950421522020542"
             try:
+                try:
+                    rotate = requests.get(change_ip_url, timeout=10)
+                    time.sleep(7)
+                except:
+                    pass
                 upload_resp = requests.post(upload_url, data=media_payload, proxies=proxies, timeout=20)
 
                 if upload_resp.ok:
@@ -227,7 +51,13 @@ def post_media(account_id, access_token, media_payload, proxies):
             # Instagram API URLs
             upload_url = f"https://graph.instagram.com/v22.0/{account_id}/media"
             publish_url = f"https://graph.instagram.com/v22.0/{account_id}/media_publish"
+            change_ip_url = "http://146.0.75.178:20480/changeip/client/73041950421522020542"
             try:
+                try:
+                    rotate = requests.get(change_ip_url, timeout=10)
+                    time.sleep(7)
+                except:
+                    pass
                 upload_resp = requests.post(upload_url, data=media_payload, proxies=proxies, timeout=20)
 
                 if upload_resp.ok:
@@ -255,11 +85,12 @@ def post_media(account_id, access_token, media_payload, proxies):
             return None, f'Request error: {e}'
 
 
-def post_media():
-
+def post():
     try:
         utc_now = now()       
-        eastern_time = localtime(utc_now)  # setting timezone to EST localtime
+        eastern_time = localtime(utc_now) 
+        eastern_time = eastern_time.replace(tzinfo=pytz.UTC)
+        print("Current Eastern Time:", eastern_time)
 
         post_obj = ( 
         MediaPost.objects
@@ -267,10 +98,11 @@ def post_media():
         .order_by('scheduled_time') 
         .first()
         ) # Get the first post that is scheduled to be posted and has not been tried yet    
-
-        if post_obj is None:
-            return  # No posts to process
         
+        if post_obj is None:
+            print('Not Found')
+            return  # No posts to process
+        print('Found')
         proxies = {
         "http": f"http://{post_obj.instagram_account.proxy}",
         "https": f"http://{post_obj.instagram_account.proxy}"
@@ -282,7 +114,7 @@ def post_media():
 
                 "image_url": post_obj.media_url,
                 "is_carousel_item": "false",  # Assuming no carousel items, change as needed
-                "caption": post_obj.caption,
+                "caption": f'{post_obj.caption} {post_obj.hashtags}',
                 "access_token": post_obj.instagram_account.access_token,
             }
             HAS_POSTED, logs = post_media( 
@@ -290,13 +122,16 @@ def post_media():
             access_token=post_obj.instagram_account.access_token,
             media_payload=media_payload,
             proxies=proxies
-        )
+            )
+            
+
             
         # post type is reel
         else:
             media_payload = {
                 "image_url": post_obj.media_url,
-                "is_carousel_item": "false",  
+                "media_type": "REELS",  
+                "caption": f"{post_obj.caption} {post_obj.hashtags}",
                 "access_token": post_obj.instagram_account.access_token,
             }
             HAS_POSTED, logs = post_reel( 
@@ -307,59 +142,43 @@ def post_media():
         )
 
         if HAS_POSTED:
+            ip = ''
+            try:
+                response = requests.get("https://api.ipify.org", proxies=proxies, timeout=5)
+                ip = response.text
+            except:
+                ip = 'Some thing went wrong'
+            HAS_DELETED = delete_from_gcs.delete_gcs_files_by_url(post_obj.media_url)
+            if HAS_DELETED:
+                post_obj.file_deleted = True
+            else:
+                post_obj.file_deleted = False
             post_obj.has_tried = True
             post_obj.has_posted = True
-            post_obj.logs = logs
+            post_obj.logs = f'{logs}. Tried proxy: {ip} '
             post_obj.save()
+            count = MediaPost.objects.filter(id=post_obj.instagram_account.id, has_tried=False).count()
+            if count < 1:
+                updateInstaAcc.update_account(post_obj.instagram_account.id, True)             
         else:
+            ip = ''
+            try:
+                response = requests.get("https://api.ipify.org", proxies=proxies, timeout=5)
+                ip = response.text
+            except:
+                ip = 'Some thing went wrong'
+            HAS_DELETED = delete_from_gcs.delete_gcs_files_by_url(post_obj.media_url)
+            if HAS_DELETED:
+                post_obj.file_deleted = True
+            else:
+                post_obj.file_deleted = False
             post_obj.has_tried = True
             post_obj.has_posted = False
-            post_obj.logs = logs
+            post_obj.logs = f'{logs}. Tried proxy: {ip} '
+            count = MediaPost.objects.filter(id=post_obj.instagram_account.id, has_tried=False).count()
+            if count < 1:
+                updateInstaAcc.update_account(post_obj.instagram_account.id, True)
 
     except Exception as e:
         print("Error in posting media:", e)
     
-
-
-# # Number of post cycles
-# post_count = 1
-
-# for i in range(post_count):
-#     if i != 0:
-#         print(f"\n🔄 Rotating IP before request group {i + 1}...")
-#         try:
-#             rotate = requests.get(change_ip_url, timeout=10)
-#             if rotate.ok:
-#                 print("✅ IP rotation triggered.")
-#             else:
-#                 print("❌ Failed to rotate IP.")
-#         except Exception as e:
-#             print("Rotation error:", e)
-#         time.sleep(6)
-
-#     print(f"\n🚀 Request Set {i + 1}: Uploading media...")
-#     try:
-#         upload_resp = requests.post(upload_url, data=media_payload, proxies=proxies, timeout=20)
-#         print("Upload status:", upload_resp.status_code)
-#         print("Upload response:", upload_resp.text)
-
-#         if upload_resp.ok:
-#             creation_id = upload_resp.json().get("id")
-#             if not creation_id:
-#                 print("❌ No creation_id returned. Skipping publish step.")
-#                 continue
-
-#             publish_payload = {
-#                 "creation_id": creation_id,
-#                 "access_token": access_token
-#             }
-
-#             print("📤 Publishing media with creation_id:", creation_id)
-#             publish_resp = requests.post(publish_url, data=publish_payload, proxies=proxies, timeout=20)
-#             print("Publish status:", publish_resp.status_code)
-#             print("Publish response:", publish_resp.text)
-#         else:
-#             print("❌ Upload failed. Skipping publish.")
-
-#     except Exception as e:
-#         print("Request error:", e)

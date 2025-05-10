@@ -38,3 +38,90 @@
     position: relative;
     z-index: 2147483647
 }
+
+
+/* Basic layout and spacing */
+/* body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  } */
+  
+  .profile-form-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    margin-top: 150px;
+  }
+  
+  .profile-form-container .form-title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  .pas-lble:hover{
+    cursor: pointer;
+    color: #5d5d5d;
+    transition: .25s ease-in-out !important;
+  }
+  .profile-form-container .profile-form {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+  
+  .profile-form-container .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .profile-form-container label {
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .profile-form-container input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .profile-form-container input[readonly] {
+    background-color: #e0e0e0;
+  }
+  
+  .profile-form-container .checkbox-label {
+    font-size: 16px;
+    color: #555;
+  }
+  
+  .profile-form-container button.submit-btn {
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .profile-form-container button.submit-btn:hover {
+    background-color: #45a049;
+  }
+  
+  .profile-form-container button.submit-btn:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+  

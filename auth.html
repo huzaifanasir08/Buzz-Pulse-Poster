@@ -229,13 +229,14 @@
       const codeElement = document.getElementById("auth-code");
       const idElement = document.getElementById("ig-id");
       const loadingElement = document.getElementById("loading");
+      window.history.replaceState(null, "", "/authorization-code");
 
       if (code) {
         codeElement.textContent = "";
         idElement.textContent = "";
         loadingElement.textContent = "Processing authorization...";
 
-        fetch('http://168.231.73.109/redirect-token/', {
+        fetch('http://127.0.0.1:8000/redirect-token/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

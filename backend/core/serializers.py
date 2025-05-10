@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import MediaPost, MediaFile, InstagramAccount
+from .models import MediaPost, MediaFile, InstagramAccount, ApplicationUser
 
 
 class MediaFileSerializer(serializers.ModelSerializer):
@@ -37,3 +37,8 @@ class InstagramAccountSerializer(serializers.ModelSerializer):
         model = InstagramAccount
         fields = '__all__'
         
+
+class ApplicationUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ApplicationUser
+        fields = ['first_name', 'last_name']  # add or remove fields as needed
