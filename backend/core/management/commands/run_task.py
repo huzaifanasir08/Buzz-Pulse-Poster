@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-# from ...dm import refreshToken
+from ...instagram_post import post
 import asyncio
 
 class Command(BaseCommand):
@@ -7,7 +7,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         self.stdout.write(self.style.SUCCESS('Starting background task...'))
-        # token = refreshToken()
-        # print(token)
+        post()
 
 

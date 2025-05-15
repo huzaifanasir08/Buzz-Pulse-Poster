@@ -35,7 +35,7 @@ export default function Statistics() {
 
       const toastId = toast.loading("Loading statistics...");
     try {
-      const res = await axios.get(`http://127.0.0.1:8000/statistics?id=${accountId}`);
+      const res = await axios.get(`https://srv809058.hstgr.cloud/statistics?id=${accountId}`);
       const graphData = res.data.graph_data || [];
       const total_rec = res.data.total_rec || [];
 
@@ -111,7 +111,7 @@ export default function Statistics() {
   const fetchAllAccounts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://127.0.0.1:8000/allaccountlist');
+      const response = await axios.get('https://srv809058.hstgr.cloud/allaccountlist');
       setAllAccounts(response.data.accounts);
     } catch (error) {
       console.error('Failed to fetch accounts:', error);
@@ -242,8 +242,8 @@ export default function Statistics() {
                         {/* Pie Chart */}
                         <Pie
                           data={[
-                            { name: 'Remaining', value: totalRec[0] - totalRec[3]  || 0 },
-                            { name: 'Tried', value: totalRec[1] || 0 },
+                            { name: 'Tried', value: totalRec[3] || 0 },
+                            { name: 'Remaining', value: totalRec[0] - totalRec[3]  || 0 },                        
                           ]}
                           dataKey="value"
                           nameKey="name"

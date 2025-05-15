@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect, useContext } from 'react'
 import './CreatPost.css'; // Import your CSS file for styles
 // import main_icon from '../../images/main_icon.png'; // Import your main icon image
 import { X } from 'lucide-react';
-import photo from '../../assets/images/photo.png'; // Import your image icon
+// import photo from '../../assets/images/photo.png'; // Import your image icon
 import axios from 'axios';
 import { useSection } from '../../Context';
 import { toast, ToastContainer } from 'react-toastify';
@@ -33,49 +33,57 @@ const CreatPost = () => {
   const validateImage = (file) => {
     return new Promise((resolve, reject) => {
       if (file.size > 8 * 1024 * 1024) {
-        reject(`❌ ${file.name} - File too large (max 8MB)`);
+        reject(`? ${file.name} - File too large (max 8MB)`);
         return;
       }
       const img = new Image();
       img.onload = () => {
         const ratio = img.width / img.height;
         if (img.width < 320 || img.width > 1440) {
-          reject(`❌ ${file.name} - Image width must be between 320px and 1440px`);
+          reject(`? ${file.name} - Image width must be between 320px and 1440px`);
         } else if (ratio < 0.8 || ratio > 1.91) {
-          reject(`❌ ${file.name} - Invalid image aspect ratio (${ratio.toFixed(2)})`);
+          reject(`? ${file.name} - Invalid image aspect ratio (${ratio.toFixed(2)})`);
         } else {
           resolve({ type: "image", file, url: URL.createObjectURL(file) });
         }
       };
-      img.onerror = () => reject(`❌ ${file.name} - Failed to load image`);
+      img.onerror = () => reject(`? ${file.name} - Failed to load image`);
       img.src = URL.createObjectURL(file);
     });
   };
 
   const validateVideo = (file) => {
-    return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
+    // Max 100 MB
+    if (file.size > 100 * 1024 * 1024) {
+      reject(`? ${file.name} - File too large (max 100MB)`);
+      return;
+    }
 
-      if (file.size > 1024 * 1024 * 1024) {
-        reject(`❌ ${file.name} - File too large (max 1GB)`);
-        return;
+    const video = document.createElement("video");
+    video.preload = "metadata";
+
+    video.onloadedmetadata = () => {
+      const ratio = video.videoWidth / video.videoHeight;
+      const duration = video.duration;
+
+      // Instagram allows 3s to 3600s (1 hour) videos
+      if (duration < 3 || duration > 3600) {
+        reject(`? ${file.name} - Invalid duration (${duration.toFixed(2)}s, must be between 3s and 3600s)`);
       }
-      const video = document.createElement("video");
-      video.preload = "metadata";
-      video.onloadedmetadata = () => {
-        const ratio = video.videoWidth / video.videoHeight;
-        const duration = video.duration;
-        if (duration < 3 || duration > 900) {
-          reject(`❌ ${file.name} - Invalid video duration (${duration.toFixed(2)}s)`);
-        } else if (ratio < 0.01 || ratio > 10.0) {
-          reject(`❌ ${file.name} - Invalid video aspect ratio (${ratio.toFixed(2)})`);
-        } else {
-          resolve({ type: "video", file, url: URL.createObjectURL(file) });
-        }
-      };
-      video.onerror = () => reject(`❌ ${file.name} - Failed to load video`);
-      video.src = URL.createObjectURL(file);
-    });
-  };
+      // Aspect ratio check (allowing roughly 0.56 to 1.91)
+      else if (ratio < 0.56 || ratio > 1.91) {
+        reject(`? ${file.name} - Invalid aspect ratio (${ratio.toFixed(2)}, must be 0.56 to 1.91)`);
+      } else {
+        resolve({ type: "video", file, url: URL.createObjectURL(file) });
+      }
+    };
+
+    video.onerror = () => reject(`? ${file.name} - Failed to load video`);
+    video.src = URL.createObjectURL(file);
+  });
+};
+
 
   const handleFileChange = async (event) => {
     const files = Array.from(event.target.files);
@@ -86,7 +94,7 @@ const CreatPost = () => {
         const validated =
           file.type.startsWith("image/") ? await validateImage(file) :
             file.type.startsWith("video/") ? await validateVideo(file) :
-              (() => { throw `❌ ${file.name} - Unsupported file type`; })();
+              (() => { throw `? ${file.name} - Unsupported file type`; })();
         newMedia.push(validated);
       } catch (err) {
         errors.push(err)
@@ -174,7 +182,7 @@ const CreatPost = () => {
 
       await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:8000/upload_to_gcs/", true);
+        xhr.open("POST", "https://srv809058.hstgr.cloud/upload_to_gcs/", true);
 
         xhr.upload.onprogress = (event) => {
           if (event.lengthComputable) {
@@ -208,7 +216,7 @@ const CreatPost = () => {
         xhr.onerror = () => reject("Network error");
         xhr.send(formData);
       }).catch((err) => {
-        toast.error(`❌ Error uploading ${mediaList[i].file.name}:\n${err}`, {
+        toast.error(`? Error uploading ${mediaList[i].file.name}:\n${err}`, {
           autoClose: 2000,
         });
       });
@@ -248,7 +256,7 @@ const CreatPost = () => {
     setAllAccounts([]); // Reset all accounts
     const toastId = toast.loading("Saving Posts...");
     try {
-      const response = await fetch('http://localhost:8000/savedata/', {
+      const response = await fetch('https://srv809058.hstgr.cloud/savedata/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -257,7 +265,7 @@ const CreatPost = () => {
       const data = await response.json();
       
       toast.update(toastId, {
-                render: "🎉 Posts scheduled successfully!",
+                render: "?? Posts scheduled successfully!",
                 type: "success",
                 isLoading: false,
                 autoClose: 2000,
@@ -266,7 +274,7 @@ const CreatPost = () => {
     } catch (error) {
       console.error('Failed to save post settings:', error);
       toast.update(toastId, {
-                render: "❌ Failed to schedule the posts.",
+                render: "? Failed to schedule the posts.",
                 type: "error",
                 isLoading: false,
                 autoClose: 3000,
@@ -284,7 +292,7 @@ const CreatPost = () => {
   const fetchAllAccounts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:8000/accountlist'); // No search query
+      const response = await axios.get('https://srv809058.hstgr.cloud/accountslist'); // No search query
       setAllAccounts(response.data.accounts);
       console.log('Fetched accounts:', response.data);
     } catch (error) {
@@ -404,7 +412,7 @@ const CreatPost = () => {
                     </div>
                     <div>
                       <div style={{ height: 538, overflowY: 'auto', padding: '20px 0px 20px 20px' }} className='media-container'>
-                        {mediaList.length === 0 ? (<img src={photo} alt="image" style={{ width: '20%', opacity: '.4' }} />) : ''}
+                        {mediaList.length === 0 ? (<img src='photo.png' alt="image" style={{ width: '20%', opacity: '.4' }} />) : ''}
 
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6" style={{ overflowY: 'auto', paddingRight:'15px' }}>
                           {mediaList.map((media, index) => (
@@ -487,7 +495,7 @@ const CreatPost = () => {
                         <div className="tabs mb-10">
 
                           <ul className="field-tips-cp">
-                            <li>Caption ⠀</li>
+                            <li>Caption ?</li>
                           </ul>
 
                           <div className="tabcontents">
@@ -509,7 +517,7 @@ const CreatPost = () => {
                         <div className="tabs mb-10">
 
                           <ul className="field-tips-cp">
-                            <li>Hashtags ⠀</li>
+                            <li>Hashtags ?</li>
                           </ul>
 
                           <div className="tabcontents">
@@ -600,7 +608,7 @@ const CreatPost = () => {
                           {/* Checkboxes */}
                           <div className="mb-5">
                             <ul className="field-tips-cp">
-                              <li>Select one of these ⠀</li>
+                              <li>Select one of these ?</li>
                             </ul>
                             <label className="mr-4" style={{ opacity: '.7' }}>
                               <input style={{ color: '#949494' }}

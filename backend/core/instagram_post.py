@@ -13,37 +13,56 @@ def post_reel(account_id, access_token, media_payload, proxies):
             upload_url = f"https://graph.instagram.com/v22.0/{account_id}/media"
             publish_url = f"https://graph.instagram.com/v22.0/{account_id}/media_publish"
             change_ip_url = "http://146.0.75.178:20480/changeip/client/73041950421522020542"
-            try:
+            for i in range(3):
                 try:
-                    rotate = requests.get(change_ip_url, timeout=10)
-                    time.sleep(7)
-                except:
-                    pass
-                upload_resp = requests.post(upload_url, data=media_payload, proxies=proxies, timeout=20)
+                    try:
+                        rotate = requests.get(change_ip_url, timeout=10)
+                        time.sleep(7)
+                    except:
+                        pass
+                    upload_resp = requests.post(upload_url, data=media_payload, proxies=proxies, timeout=30)
 
-                if upload_resp.ok:
-                    creation_id = upload_resp.json().get("id")
-                    if not creation_id:
-                        return None, 'No instagram post id returned in upload response'
+                    if upload_resp.ok:
+                        creation_id = upload_resp.json().get("id")
+                        if not creation_id:
+                            return False, 'No instagram post id returned in upload response'
 
-                    publish_payload = {
-                        "creation_id": creation_id,
-                        "access_token": access_token
-                    }
+                        publish_payload = {
+                            "creation_id": creation_id,
+                            "access_token": access_token
+                        }
+                        Found = False
+                        for _ in range(5):  # Try for ~175 seconds
+                            try:
+                                time.sleep(35)
+                                check_url = f"https://graph.instagram.com/v22.0/{creation_id}?fields=status_code&access_token={access_token}"
+                                status_resp = requests.get(check_url, proxies=proxies, timeout=10)
+                                if status_resp.ok:
+                                    status = status_resp.json().get("status_code")
+                                    if status == "FINISHED":
+                                        Found = True
+                                        break
+                                    else:
+                                        Found = False
+                            except:
+                                Found = False  
+                        if not Found:
+                            return False, f"Failed to upload media to Instagram. Taking too long to process."  
 
-                    publish_resp = requests.post(publish_url, data=publish_payload, proxies=proxies, timeout=20)
-                    if publish_resp.ok:
-                        return True, 'Instagram post published successfully'
-                    return False, publish_resp.text
-                else:
-                    return None, upload_resp.text
+                        publish_resp = requests.post(publish_url, data=publish_payload, proxies=proxies, timeout=20)
+                        if publish_resp.ok:
+                            return True, 'Instagram reel published successfully'
+                        return False, f'Error during uploading media to instagram: {publish_resp.text}'
+                    else:
+                        return False, f'Error during upload media to instagram: {upload_resp.text}'
 
-            except Exception as e:
-                return None, f'Request error: {e}'
-
+                except Exception as e:
+                    time.sleep(60)
+                
+            return False, f'Tried 3 times. Request error: {e}'
 
         except Exception as e:
-            return None, f'Request error: {e}'
+            return False, f'Request error: {e}'
 
 
 def post_media(account_id, access_token, media_payload, proxies):
@@ -52,37 +71,37 @@ def post_media(account_id, access_token, media_payload, proxies):
             upload_url = f"https://graph.instagram.com/v22.0/{account_id}/media"
             publish_url = f"https://graph.instagram.com/v22.0/{account_id}/media_publish"
             change_ip_url = "http://146.0.75.178:20480/changeip/client/73041950421522020542"
-            try:
+            for i in range(3):
                 try:
-                    rotate = requests.get(change_ip_url, timeout=10)
-                    time.sleep(7)
-                except:
-                    pass
-                upload_resp = requests.post(upload_url, data=media_payload, proxies=proxies, timeout=20)
+                    try:
+                        rotate = requests.get(change_ip_url, timeout=10)
+                    except:
+                        pass
+                    upload_resp = requests.post(upload_url, data=media_payload, proxies=proxies, timeout=30)
 
-                if upload_resp.ok:
-                    creation_id = upload_resp.json().get("id")
-                    if not creation_id:
-                        return None, 'No instagram post id returned in upload response'
+                    if upload_resp.ok:
+                        creation_id = upload_resp.json().get("id")
+                        if not creation_id:
+                            return False, 'No instagram post id returned in upload response'
 
-                    publish_payload = {
-                        "creation_id": creation_id,
-                        "access_token": access_token
-                    }
+                        publish_payload = {
+                            "creation_id": creation_id,
+                            "access_token": access_token
+                        }
+                        time.sleep(10)
+                        publish_resp = requests.post(publish_url, data=publish_payload, proxies=proxies, timeout=30)
+                        if publish_resp.ok:
+                            return True, 'Instagram post published successfully'
+                        return False,  f'Error during uploading media to instagram: {publish_resp.text}'
+                    else:
+                        return False, f'Error during upload media to instagram: {upload_resp.text}'
 
-                    publish_resp = requests.post(publish_url, data=publish_payload, proxies=proxies, timeout=20)
-                    if publish_resp.ok:
-                        return True, 'Instagram post published successfully'
-                    return False, publish_resp.text
-                else:
-                    return None, upload_resp.text
-
-            except Exception as e:
-                return None, f'Request error: {e}'
-
+                except Exception as e:
+                    time.sleep(60)
+            return False, f'Tried 3 times. Request error: {e}'
 
         except Exception as e:
-            return None, f'Request error: {e}'
+            return False, f'Request error: {e}'
 
 
 def post():
@@ -90,7 +109,6 @@ def post():
         utc_now = now()       
         eastern_time = localtime(utc_now) 
         eastern_time = eastern_time.replace(tzinfo=pytz.UTC)
-        print("Current Eastern Time:", eastern_time)
 
         post_obj = ( 
         MediaPost.objects
@@ -100,9 +118,7 @@ def post():
         ) # Get the first post that is scheduled to be posted and has not been tried yet    
         
         if post_obj is None:
-            print('Not Found')
-            return  # No posts to process
-        print('Found')
+            return 
         proxies = {
         "http": f"http://{post_obj.instagram_account.proxy}",
         "https": f"http://{post_obj.instagram_account.proxy}"
@@ -129,7 +145,7 @@ def post():
         # post type is reel
         else:
             media_payload = {
-                "image_url": post_obj.media_url,
+                "video_url": post_obj.media_url,
                 "media_type": "REELS",  
                 "caption": f"{post_obj.caption} {post_obj.hashtags}",
                 "access_token": post_obj.instagram_account.access_token,
@@ -140,7 +156,6 @@ def post():
             media_payload=media_payload,
             proxies=proxies
         )
-
         if HAS_POSTED:
             ip = ''
             try:
@@ -175,6 +190,7 @@ def post():
             post_obj.has_tried = True
             post_obj.has_posted = False
             post_obj.logs = f'{logs}. Tried proxy: {ip} '
+            post_obj.save()
             count = MediaPost.objects.filter(id=post_obj.instagram_account.id, has_tried=False).count()
             if count < 1:
                 updateInstaAcc.update_account(post_obj.instagram_account.id, True)

@@ -1,11 +1,9 @@
-# Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
-# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Install build dependencies needed for mysqlclient and others
+# System deps
 RUN apt-get update && apt-get install -y \
     build-essential \
     default-libmysqlclient-dev \
@@ -13,20 +11,21 @@ RUN apt-get update && apt-get install -y \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /usr/src/app
 
-# Copy requirements first
+# Install Python deps
 COPY req.txt .
-
-# Install Python dependencies
 RUN pip install --upgrade pip && pip install -r req.txt
 
-# Copy the rest of the code
+# Copy project files
 COPY . .
 
-# Expose Django port
+ENV DJANGO_SETTINGS_MODULE=BuzzPulsePoster.settings
+RUN python manage.py collectstatic --noinput
+
+# Expose port for Django dev server
 EXPOSE 8000
 
-# Run the Django server
-CMD ["python", "manage.py", "runserver"]
+# Default command is overridden by docker-compose
+CMD ["gunicorn", "BuzzPulsePoster.wsgi:application", "--bind", "0.0.0.0:8000"]
+

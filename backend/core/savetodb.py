@@ -11,7 +11,6 @@ def connectdb():
             password=mysqlconfig.password, # Your MySQL password
             database=mysqlconfig.database  # Your database name
             )
-            print("Connected to database.")
 
             return conn
         except:
@@ -25,7 +24,6 @@ def saveDataInDb(post_type, caption, scheduled_time, created_at, has_tried, inst
             conn = connectdb()
         cursor = conn.cursor()
         for media_url, time in zip(media_urls, scheduled_time):
-            print(media_url[0], media_url[1])
             try:
                 sql = f"""INSERT INTO core_mediapost (post_type, caption, scheduled_time, created_at, has_tried, instagram_account_id, hashtags, media_url, has_posted, file_deleted, logs) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
@@ -38,9 +36,7 @@ def saveDataInDb(post_type, caption, scheduled_time, created_at, has_tried, inst
                 # Commit changes
             except Exception as e:
                 conn.commit()
-                print(f"Error inserting data: {e}")
                 
-        # print(f"{cursor.rowcount} record inserted.")
 
         if conn is not None and conn.is_connected():
             conn.commit()

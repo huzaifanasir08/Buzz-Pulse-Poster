@@ -19,13 +19,13 @@ export default function Profile() {
   const [newPassword, setNewPassword] = useState('');
   const [isChanged, setIsChanged] = useState(false);
   const [loading, setLoading] = useState(false);
-  const url = 'http://127.0.0.1:8000/admin/password_change/'
+  const url = 'https://srv809058.hstgr.cloud/admin/password_change/'
 
   // Fetch profile data from backend
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('http://127.0.0.1:8000/profile'); // 🔁 Update endpoint
+        const res = await axios.get('https://srv809058.hstgr.cloud/profile'); // 🔁 Update endpoint
         setProfileData(res.data);
         setOriginalData(res.data);
       } catch (err) {
@@ -62,7 +62,7 @@ export default function Profile() {
     try {
       const payload = { ...profileData };
 
-      await axios.put('http://127.0.0.1:8000/profile/', payload); // 🔁 Update endpoint
+      await axios.put('https://srv809058.hstgr.cloud/profile/', payload); // 🔁 Update endpoint
       setOriginalData(profileData); // Reset original data
       setIsChangePasswordChecked(false);
       setNewPassword('');

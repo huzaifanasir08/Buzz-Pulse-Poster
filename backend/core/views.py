@@ -119,7 +119,6 @@ def upload_to_gcs(request):
 
         public_url = blob.public_url
         results.append({'filename': uploaded_file.name, 'url': public_url})
-        # print(f"Uploaded {uploaded_file.name} to {public_url}")
     
     return JsonResponse({
         'status': 'success',
@@ -152,8 +151,7 @@ def save_post_details(request):
     if post_mode == 'delay':
         schedule_time = data.get('safety_delay_seconds')
         for i in range(len(media_urls)):
-            # print("Scheduled time:", scheduled_time)
-            scheduled_time = eastern_time + timedelta(hours=schedule_time*i+1, seconds=random.randint(1, 900))
+            scheduled_time = eastern_time + timedelta(hours=schedule_time*i, seconds=random.randint(1, 900))
             times.append(scheduled_time)
             if media_urls[i].lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp')):
                 post_type = 'post'
@@ -189,8 +187,6 @@ def save_post_details(request):
             })
     elif post_mode == 'daily':
         scheduled_time = data.get('daily_post_time')
-        print(scheduled_time)
-        print('----------------')
         base_time = get_base_start_time(scheduled_time)
         for i in range(len(media_urls)):
             next_post_time = calculate_next_post_time(base_time, i)
@@ -360,7 +356,6 @@ def oauth_redirect(request):
                     }) 
 
                 except Exception as e:
-                    print(f'Error in getting auth code: {e}')
                     return JsonResponse({
                     'status': f'Error: {e}',
                     'access_token': 'No authorization code found',

@@ -1,0 +1,61 @@
+.privacy-container {
+    max-width: 80%;
+    margin: 50px auto;
+    padding: 40px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    /* background-color: #fff; */
+    line-height: 1.7;
+    text-align: left;
+}
+
+.privacy-title {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.effective-date {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+.sectionPP {
+  margin-bottom: 30px;
+}
+
+.sectionPP-title {
+  font-size: 1.5rem;
+  color: #1e3799;
+  margin-bottom: 15px;
+}
+
+.subsectionPP {
+  margin-bottom: 20px;
+}
+
+.subsectionPP-title {
+  font-size: 1.2rem;
+  color: #3c6382;
+  margin-bottom: 10px;
+}
+
+.ic {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+
+.ic li {
+  list-style-type: disc;
+  margin-bottom: 5px;
+}
+
+.ic a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.ic a:hover {
+  text-decoration: underline;
+}

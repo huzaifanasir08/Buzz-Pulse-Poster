@@ -10,6 +10,7 @@ import Login from './pages/Login/Login.jsx';
 import { ContextProvider } from './Context.jsx';
 import { AuthProvider } from './AuthContext.jsx';
 import PrivateRoute from './PrivateRoute.jsx';
+import PrivacyPolicy from './pages/PrivacyPolicy/PrivacyPolicy.jsx';
 
 function App() {
   const location = useLocation(); // Get current location
@@ -29,6 +30,7 @@ function App() {
             <Route path="/statistics" element={<PrivateRoute><Statistics /></PrivateRoute>} />
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
             <Route path="/cleaner" element={<PrivateRoute><Cleaner /></PrivateRoute>} />
+            <Route path="/privacy_policy" element={<PrivateRoute><PrivacyPolicy /></PrivateRoute>} />
           </Routes>
         </div>
       </ContextProvider>

@@ -13,7 +13,7 @@ export default function AddAccount() {
     account_id: ''
   });
   const proxyUrl = "Example: {username}:{password}@{proxy_host}:{proxy_port}";
-  const url = 'https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=1385265725991934&redirect_uri=https://scheduleinstagramposts.com/auth.html&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights';
+  const url = 'https://developers.facebook.com/apps/1383650692818732/instagram-business/API-Setup/';
 
    const { setSection } = useSection();
    setSection('Add Account')
@@ -26,7 +26,7 @@ export default function AddAccount() {
     e.preventDefault();
     const toastId = toast.loading("Adding Account...");
     try {
-      const res = await fetch('http://127.0.0.1:8000/createaccount/', {
+      const res = await fetch('https://srv809058.hstgr.cloud/createaccount/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -18,7 +18,7 @@ redis_client = redis.StrictRedis(
 @shared_task
 def check_and_post():
     lock_key = "check_and_post_lock"
-    task_timeout = 2000
+    task_timeout = 600
 
     if redis_client.setnx(lock_key, 'locked'):
         try:
@@ -29,12 +29,9 @@ def check_and_post():
             instagram_post.post()
             refresh_token.refresh_token()
    
-            # print(f"Task completed at {timezone.now()}.")
         except Exception as e:
             print(f"Error posting: {e}")
         finally:
-            # Always release the lock after the task is completed
             redis_client.delete(lock_key)
     else:
-        # If the task is already running, skip execution
-        print("Task is already running. Skipping this execution.")
+        pass

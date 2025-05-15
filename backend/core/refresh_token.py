@@ -10,9 +10,7 @@ def refresh_token():
             utc_now = now()       
             eastern_time = localtime(utc_now) 
             eastern_time = eastern_time.replace(tzinfo=pytz.UTC)
-            print("Current Eastern Time:", eastern_time)
-            lowered_time = eastern_time - timedelta(days=1)
-            print(lowered_time)
+            lowered_time = eastern_time - timedelta(days=55)
             url = 'https://graph.instagram.com/refresh_access_token'
             grant_type = 'ig_refresh_token'
             insta_obj = ( 
@@ -39,7 +37,6 @@ def refresh_token():
                             new_accessToken = res_data.get('access_token')
                             insta_obj.access_token = new_accessToken
                             insta_obj.save()
-                            print('New saved')
                             
                         except Exception as e:
                             pass
