@@ -39,8 +39,8 @@ class InstagramAccountAdmin(admin.ModelAdmin):
     list_filter = ('free_for_posting',)
 
 class MediaPostAdmin(admin.ModelAdmin):
-    list_display = ('id', 'post_type', 'scheduled_time', 'has_tried', 'has_posted', 'file_deleted', 'logs')
-    search_fields = ('has_posted',)
+    list_display = ('id', 'instagram_account', 'post_type', 'scheduled_time', 'has_tried', 'has_posted', 'file_deleted', 'logs')
+    search_fields = ('instagram_account__username',)
     list_filter = ('scheduled_time',)
 
 # Register models

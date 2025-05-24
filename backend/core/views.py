@@ -39,10 +39,6 @@ def user_info(request):
         return JsonResponse({"error": "GET method required"}, status=405)
 
 
-
-
-
-
 def now():
     eastern = ZoneInfo("America/New_York")
     return datetime.now(tz=eastern)
