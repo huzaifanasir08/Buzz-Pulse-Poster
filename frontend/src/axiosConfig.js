@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://srv809058.hstgr.cloud/',
+  baseURL: ' https://srv810632.hstgr.cloud/api/',
 });
 
 instance.interceptors.request.use(

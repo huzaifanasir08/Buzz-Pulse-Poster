@@ -26,7 +26,7 @@ export default function AddAccount() {
     e.preventDefault();
     const toastId = toast.loading("Adding Account...");
     try {
-      const res = await fetch('https://srv809058.hstgr.cloud/createaccount/', {
+      const res = await fetch('https://srv810632.hstgr.cloud/api/createaccount/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

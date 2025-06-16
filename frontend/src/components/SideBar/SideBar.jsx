@@ -14,7 +14,7 @@ const SideBar = () => {
   const { section } = useSection();
   const { logout } = useAuth();
   const [userName, setUserName] = useState()
-  const url = 'https://srv809058.hstgr.cloud/admin/core/mediapost/'
+  const url = 'http://168.231.74.109:8080/admin/core/mediapost/'
 
 
 
@@ -22,14 +22,14 @@ const SideBar = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://srv809058.hstgr.cloud/userinfo');
+        const response = await axios.get('https://srv810632.hstgr.cloud/api/userinfo');
         setUserData(response.data);
   
         const fullName = `${response.data.first_name} ${response.data.last_name}`;
         const trimmedName = fullName.length > 10 ? fullName.slice(0, 10) + '.' : fullName;
         setUserName(trimmedName);
   
-        console.log('Fetched user info:', response.data);
+        // console.log('Fetched user info:', response.data);
       } catch (error) {
         console.error('Failed to fetch user info:', error);
       } finally {

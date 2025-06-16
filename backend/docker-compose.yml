@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.8'
 
 services:
   backend:
@@ -7,34 +7,19 @@ services:
       dockerfile: Dockerfile
     container_name: backend
     command: gunicorn BuzzPulsePoster.wsgi:application --bind 0.0.0.0:8000
-    expose:
-      - "8000"
+    #ports:
+    #  - "8080:8000"  # Expose to host so host Nginx can access it
     environment:
-      - DJANGO_ALLOWED_HOSTS=srv809058.hstgr.cloud
+      - DJANGO_ALLOWED_HOSTS=168.231.74.109,localhost
       - DEBUG=False
       - DJANGO_SETTINGS_MODULE=BuzzPulsePoster.settings
-      - CELERY_BROKER_URL=redis://:SocialG4161w$@redis:6379/0
+      - CELERY_BROKER_URL=redis://:SocialPOSTINGG4160w$@redis:6379/0
     volumes:
+      - static_volume:/usr/src/app/staticfiles
+      - media_volume:/usr/src/app/media
       - .:/usr/src/app
     depends_on:
       - redis
-    networks:
-      - app_network
-
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./certs:/etc/nginx/certs:ro
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-      - .:/usr/src/app    
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf 
-    depends_on:
-      - backend
     networks:
       - app_network
 
@@ -45,7 +30,7 @@ services:
     container_name: celery
     command: celery -A BuzzPulsePoster worker --loglevel=info
     environment:
-      - CELERY_BROKER_URL=redis://:SocialG4161w$@redis:6379/0
+      - CELERY_BROKER_URL=redis://:SocialPOSTINGG4160w$@redis:6379/0
     volumes:
       - .:/usr/src/app
     depends_on:
@@ -60,7 +45,7 @@ services:
     container_name: celerybeat
     command: celery -A BuzzPulsePoster beat --loglevel=info
     environment:
-      - CELERY_BROKER_URL=redis://:SocialG4161w$@redis:6379/0
+      - CELERY_BROKER_URL=redis://:SocialPOSTINGG4160w$@redis:6379/0
     volumes:
       - .:/usr/src/app
     depends_on:
@@ -71,10 +56,28 @@ services:
   redis:
     image: redis:alpine
     container_name: redis
-    command: redis-server --requirepass "SocialG4161w$"
+    command: redis-server --requirepass "SocialPOSTINGG4160w$"
     networks:
       - app_network
+
+  nginx:
+      image: nginx:stable-alpine
+      container_name: nginx
+      depends_on:
+        - backend
+      ports:
+        - "8080:80"
+      volumes:
+        - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+        - static_volume:/staticfiles
+        - media_volume:/media
+      networks:
+        - app_network
 
 networks:
   app_network:
     driver: bridge
+
+volumes:
+  static_volume:
+  media_volume:

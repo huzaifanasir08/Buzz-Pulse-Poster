@@ -35,7 +35,7 @@ export default function Statistics() {
 
       const toastId = toast.loading("Loading statistics...");
     try {
-      const res = await axios.get(`https://srv809058.hstgr.cloud/statistics?id=${accountId}`);
+      const res = await axios.get(`https://srv810632.hstgr.cloud/api/statistics?id=${accountId}`);
       const graphData = res.data.graph_data || [];
       const total_rec = res.data.total_rec || [];
 
@@ -111,7 +111,7 @@ export default function Statistics() {
   const fetchAllAccounts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('https://srv809058.hstgr.cloud/allaccountlist');
+      const response = await axios.get('https://srv810632.hstgr.cloud/api/allaccountlist');
       setAllAccounts(response.data.accounts);
     } catch (error) {
       console.error('Failed to fetch accounts:', error);
@@ -250,15 +250,15 @@ export default function Statistics() {
                           cx="50%"
                           cy="50%"
                           outerRadius={100}
-                          label // ✅ show edge labels
-                          labelLine // ✅ show lines
+                          label // ? show edge labels
+                          labelLine // ? show lines
                         >
                           {['#82ca9d', '#ff6b6b'].map((fillColor, index) => (
                             <Cell key={`cell-${index}`} fill={fillColor} />
                           ))}
                         </Pie>
 
-                        {/* ✅ Center Total Text rendered separately */}
+                        {/* ? Center Total Text rendered separately */}
                         <text
                           x="50%"
                           y="50%"
@@ -296,15 +296,15 @@ export default function Statistics() {
                           cx="50%"
                           cy="50%"
                           outerRadius={100}
-                          label // ✅ show edge labels
-                          labelLine // ✅ show lines
+                          label // ? show edge labels
+                          labelLine // ? show lines
                         >
                           {['#348368', '#82ca9d'].map((fillColor, index) => (
                             <Cell key={`cell-${index}`} fill={fillColor} />
                           ))}
                         </Pie>
 
-                        {/* ✅ Center Total Text rendered separately */}
+                        {/* ? Center Total Text rendered separately */}
                         <text
                           x="50%"
                           y="50%"
@@ -345,15 +345,15 @@ export default function Statistics() {
                           cx="50%"
                           cy="50%"
                           outerRadius={100}
-                          label // ✅ show edge labels
-                          labelLine // ✅ show lines
+                          label // ? show edge labels
+                          labelLine // ? show lines
                         >
                           {['#82ca9d', '#ff6b6b'].map((fillColor, index) => (
                             <Cell key={`cell-${index}`} fill={fillColor} />
                           ))}
                         </Pie>
 
-                        {/* ✅ Center Total Text rendered separately */}
+                        {/* ? Center Total Text rendered separately */}
                         <text
                           x="50%"
                           y="50%"
@@ -392,15 +392,15 @@ export default function Statistics() {
                           cx="50%"
                           cy="50%"
                           outerRadius={100}
-                          label // ✅ show edge labels
-                          labelLine // ✅ show lines
+                          label // ? show edge labels
+                          labelLine // ? show lines
                         >
                           {['#82ca9d', '#ff6b6b'].map((fillColor, index) => (
                             <Cell key={`cell-${index}`} fill={fillColor} />
                           ))}
                         </Pie>
 
-                        {/* ✅ Center Total Text rendered separately */}
+                        {/* ? Center Total Text rendered separately */}
                         <text
                           x="50%"
                           y="50%"

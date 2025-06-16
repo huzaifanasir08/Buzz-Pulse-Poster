@@ -54,9 +54,9 @@ const CreatPost = () => {
 
   const validateVideo = (file) => {
   return new Promise((resolve, reject) => {
-    // Max 100 MB
-    if (file.size > 100 * 1024 * 1024) {
-      reject(`? ${file.name} - File too large (max 100MB)`);
+    // Instagram max video file size: up to 4GB (but let's limit to 2MB for performance)
+    if (file.size > 200 * 1024 * 1024) {
+      reject(`? ${file.name} - File too large (max 200MB)`);
       return;
     }
 
@@ -64,25 +64,46 @@ const CreatPost = () => {
     video.preload = "metadata";
 
     video.onloadedmetadata = () => {
-      const ratio = video.videoWidth / video.videoHeight;
+      const width = video.videoWidth;
+      const height = video.videoHeight;
+      const ratio = width / height;
       const duration = video.duration;
 
-      // Instagram allows 3s to 3600s (1 hour) videos
+      // Duration checks
+      // Feed & reels: 3 to 90 sec, IGTV: up to 60 min, Stories: 1 to 60 sec (safe bounds: 3s - 3600s)
       if (duration < 3 || duration > 3600) {
-        reject(`? ${file.name} - Invalid duration (${duration.toFixed(2)}s, must be between 3s and 3600s)`);
+        reject(`? ${file.name} - Invalid duration (${duration.toFixed(2)}s, must be 3s to 3600s)`);
+        return;
       }
-      // Aspect ratio check (allowing roughly 0.56 to 1.91)
-      else if (ratio < 0.56 || ratio > 1.91) {
-        reject(`? ${file.name} - Invalid aspect ratio (${ratio.toFixed(2)}, must be 0.56 to 1.91)`);
-      } else {
-        resolve({ type: "video", file, url: URL.createObjectURL(file) });
+
+      // Aspect ratio: 4:5 (0.8) to 16:9 (1.78) is safe, but IG allows 0.56 to 1.91
+      if (ratio < 0.55 || ratio > 1.90) {
+        reject(`? ${file.name} - Invalid aspect ratio (${ratio.toFixed(4)}, must be between 0.5625 and 1.91 inclusive)`);
+        return;
       }
+
+
+      // Dimension sanity checks (Instagram recommends 1080p max, but allow less)
+      if (width < 320 || height < 240) {
+        reject(`? ${file.name} - Resolution too low (${width}x${height}, must be at least 320x240)`);
+        return;
+      }
+
+      resolve({
+        type: "video",
+        file,
+        url: URL.createObjectURL(file),
+        duration,
+        resolution: `${width}x${height}`,
+        ratio: ratio.toFixed(2),
+      });
     };
 
-    video.onerror = () => reject(`? ${file.name} - Failed to load video`);
+    video.onerror = () => reject(`? ${file.name} - Failed to load video metadata`);
     video.src = URL.createObjectURL(file);
   });
 };
+
 
 
   const handleFileChange = async (event) => {
@@ -182,7 +203,7 @@ const CreatPost = () => {
 
       await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://srv809058.hstgr.cloud/upload_to_gcs/", true);
+        xhr.open("POST", "https://srv810632.hstgr.cloud/api/upload_to_gcs/", true);
 
         xhr.upload.onprogress = (event) => {
           if (event.lengthComputable) {
@@ -256,7 +277,7 @@ const CreatPost = () => {
     setAllAccounts([]); // Reset all accounts
     const toastId = toast.loading("Saving Posts...");
     try {
-      const response = await fetch('https://srv809058.hstgr.cloud/savedata/', {
+      const response = await fetch('https://srv810632.hstgr.cloud/api/savedata/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -292,9 +313,9 @@ const CreatPost = () => {
   const fetchAllAccounts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('https://srv809058.hstgr.cloud/accountslist'); // No search query
+      const response = await axios.get('https://srv810632.hstgr.cloud/api/accountslist'); // No search query
       setAllAccounts(response.data.accounts);
-      console.log('Fetched accounts:', response.data);
+      // console.log('Fetched accounts:', response.data);
     } catch (error) {
       console.error('Failed to fetch accounts:', error);
     } finally {

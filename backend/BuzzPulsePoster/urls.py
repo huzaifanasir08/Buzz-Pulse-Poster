@@ -6,7 +6,7 @@ from django.conf.urls import handler404
 # URL patterns for your project
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('core.urls')),  # Replace 'core.urls' with your app's URL patterns
+    path('api/', include('core.urls')),  # Replace 'core.urls' with your app's URL patterns
 ]
 
 # # Custom error page handler for 404 errors
