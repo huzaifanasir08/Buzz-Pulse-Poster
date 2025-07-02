@@ -77,10 +77,11 @@ const CreatPost = () => {
       }
 
       // Aspect ratio: 4:5 (0.8) to 16:9 (1.78) is safe, but IG allows 0.56 to 1.91
-      if (ratio < 0.55 || ratio > 1.90) {
-        reject(`? ${file.name} - Invalid aspect ratio (${ratio.toFixed(4)}, must be between 0.5625 and 1.91 inclusive)`);
+      if (ratio < 0.8 || ratio > 1.91) {
+        reject(`❌ ${file.name} - Invalid aspect ratio (${ratio.toFixed(4)}). Allowed range is 0.8 (4:5) to 1.91 (approx 16:9). Consider cropping or padding the video.`);
         return;
       }
+
 
 
       // Dimension sanity checks (Instagram recommends 1080p max, but allow less)
