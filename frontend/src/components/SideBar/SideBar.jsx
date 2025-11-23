@@ -22,7 +22,7 @@ const SideBar = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://srv810632.hstgr.cloud/api/userinfo');
+        const response = await axios.get('base_url/api/userinfo');
         setUserData(response.data);
   
         const fullName = `${response.data.first_name} ${response.data.last_name}`;
