@@ -163,9 +163,18 @@ Returns:
 ## 📸 Screenshots
 
 -   Login Page
--   Dashboard / Home (Bulk Media Upload + Scheduler)
+    ![Login Page](https://github.com/user-attachments/assets/73b9f0dc-471b-4918-a2de-6888c5e60248)
+    
+-   Dashboard / Home (Bulk Media Upload + Scheduler
+    ![Home](https://github.com/user-attachments/assets/e62f5f6b-3fb2-4da4-b70d-e5818f66bab2)
+    
 -   Statistics & Insights
+    ![Statistics](https://github.com/user-attachments/assets/6973eea3-ff20-4769-8158-831da3bb36ae)
+    
+    ![Insights](https://github.com/user-attachments/assets/6c6250f4-a1d7-4126-b1f7-b3a9e53186fa)
+    
 -   Admin Panel
+    ![Admin Panel](https://github.com/user-attachments/assets/2b8f1ae9-bb7f-4d98-9969-7ec82b020ec0)
 
 ------------------------------------------------------------------------
 
