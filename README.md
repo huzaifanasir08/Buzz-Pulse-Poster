@@ -7,7 +7,7 @@ Poster](https://github.com/user-attachments/assets/d4aa8eb5-bd54-4c29-94af-a1846
 
 Buzz Pulse Poster is a full‑stack Instagram automation platform built
 with **Django**, **React**, **Celery**, and the **Instagram Graph
-API**.\
+API**. [Graph API Documentation](https://developers.facebook.com/docs/graph-api/overview)
 It enables effortless bulk scheduling, reliable automated posting, and
 high‑scale content delivery for agencies, creators, and businesses
 managing multiple Instagram accounts.
