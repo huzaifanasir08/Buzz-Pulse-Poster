@@ -195,14 +195,14 @@ Returns:
 ### Clone the Repo
 
 ``` bash
-git clone https://github.com/yourusername/buzz-pulse-poster.git
+git clone https://github.com/huzaifanasir08/buzz-pulse-poster.git
 cd buzz-pulse-poster
 ```
 
 ### Backend Setup
 
 ``` bash
-pip install -r requirements.txt
+pip install -r req.txt
 python manage.py migrate
 python manage.py runserver
 ```
