@@ -25,7 +25,7 @@ export default function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('https://srv810632.hstgr.cloud/api/profile'); // 🔁 Update endpoint
+        const res = await axios.get('base_url/api/profile'); // 🔁 Update endpoint
         setProfileData(res.data);
         setOriginalData(res.data);
       } catch (err) {
@@ -62,7 +62,7 @@ export default function Profile() {
     try {
       const payload = { ...profileData };
 
-      await axios.put('https://srv810632.hstgr.cloud/api/profile/', payload); // 🔁 Update endpoint
+      await axios.put('base_url/api/profile/', payload); // 🔁 Update endpoint
       setOriginalData(profileData); // Reset original data
       setIsChangePasswordChecked(false);
       setNewPassword('');

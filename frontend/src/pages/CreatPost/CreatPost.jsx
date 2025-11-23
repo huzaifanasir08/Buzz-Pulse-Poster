@@ -204,7 +204,7 @@ const CreatPost = () => {
 
       await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://srv810632.hstgr.cloud/api/upload_to_gcs/", true);
+        xhr.open("POST", "base_url/api/upload_to_gcs/", true);
 
         xhr.upload.onprogress = (event) => {
           if (event.lengthComputable) {
@@ -278,7 +278,7 @@ const CreatPost = () => {
     setAllAccounts([]); // Reset all accounts
     const toastId = toast.loading("Saving Posts...");
     try {
-      const response = await fetch('https://srv810632.hstgr.cloud/api/savedata/', {
+      const response = await fetch('base_url/api/savedata/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -314,7 +314,7 @@ const CreatPost = () => {
   const fetchAllAccounts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('https://srv810632.hstgr.cloud/api/accountslist'); // No search query
+      const response = await axios.get('base_url/api/accountslist'); // No search query
       setAllAccounts(response.data.accounts);
       // console.log('Fetched accounts:', response.data);
     } catch (error) {

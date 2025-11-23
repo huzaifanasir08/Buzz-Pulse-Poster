@@ -11,11 +11,11 @@ services:
     #  - "8080:8000"  # Expose to host so host Nginx can access it
     restart: unless-stopped
     environment:
-      - DJANGO_ALLOWED_HOSTS=srv810632.hstgr.cloud,168.231.74.109,localhost,168.231.74.109:8080,127.0.0.1:8000
+      - DJANGO_ALLOWED_HOSTS=''
       - DEBUG=False
       - DJANGO_SETTINGS_MODULE=BuzzPulsePoster.settings
-      - CELERY_BROKER_URL=redis://:SocialPOSTINGG4160w$@redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://:SocialPOSTINGG4160w$@redis:6379/0
+      - CELERY_BROKER_URL=redis://:radis_user$@redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://:radis_user$@redis:6379/0
     volumes:
       - static_volume:/usr/src/app/staticfiles
       - media_volume:/usr/src/app/media
@@ -32,8 +32,8 @@ services:
     container_name: celery
     command: celery -A BuzzPulsePoster worker --loglevel=info
     environment:
-      CELERY_BROKER_URL: redis://:SocialPOSTINGG4160w$@redis:6379/0
-      CELERY_RESULT_BACKEND: redis://:SocialPOSTINGG4160w$@redis:6379/0
+      CELERY_BROKER_URL: redis://:radis_user$@redis:6379/0
+      CELERY_RESULT_BACKEND: redis://:radis_user$@redis:6379/0
 
     volumes:
       - .:/usr/src/app
@@ -50,8 +50,8 @@ services:
     container_name: celerybeat
     command: celery -A BuzzPulsePoster beat --loglevel=info
     environment:
-      CELERY_BROKER_URL: redis://:SocialPOSTINGG4160w$@redis:6379/0
-      CELERY_RESULT_BACKEND: redis://:SocialPOSTINGG4160w$@redis:6379/0
+      CELERY_BROKER_URL: redis://:radis_user$@redis:6379/0
+      CELERY_RESULT_BACKEND: redis://:radis_user$@redis:6379/0
 
     volumes:
       - .:/usr/src/app
@@ -64,7 +64,7 @@ services:
   redis:
     image: redis:alpine
     container_name: redis
-    command: redis-server --requirepass "SocialPOSTINGG4160w$"
+    command: redis-server --requirepass "password"
     restart: unless-stopped
     networks:
       - app_network

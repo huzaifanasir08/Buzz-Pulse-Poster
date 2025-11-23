@@ -35,7 +35,7 @@ export default function Statistics() {
 
       const toastId = toast.loading("Loading statistics...");
     try {
-      const res = await axios.get(`https://srv810632.hstgr.cloud/api/statistics?id=${accountId}`);
+      const res = await axios.get(`base_url/api/statistics?id=${accountId}`);
       const graphData = res.data.graph_data || [];
       const total_rec = res.data.total_rec || [];
 
@@ -111,7 +111,7 @@ export default function Statistics() {
   const fetchAllAccounts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('https://srv810632.hstgr.cloud/api/allaccountlist');
+      const response = await axios.get('base_url/api/allaccountlist');
       setAllAccounts(response.data.accounts);
     } catch (error) {
       console.error('Failed to fetch accounts:', error);

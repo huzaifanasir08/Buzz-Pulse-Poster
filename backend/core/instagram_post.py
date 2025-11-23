@@ -14,11 +14,11 @@ from django.utils import timezone
 def send_email(time, message):
     try:
         port = 587
-        smtp_server = "mail.jinnahtech.com"
-        login = "huzaifa.nasir@jinnahtech.com"
-        password = "HuzaifaButt2003"
-        sender_email = "huzaifa.nasir@jinnahtech.com"
-        receivers = ["huzaifa.nasir@datafunction.ca"]
+        smtp_server = "your_smtp_server"
+        login = "email_login"
+        password = "password"
+        sender_email = "sender_email"
+        receivers = ["receiver_email"]
         text = f"""\
 Dear Administrator,
 
@@ -29,10 +29,6 @@ Thank you for your time to read this message.
 
 Best regards,
 
-Huzaifa Nasir
-Backend Developer
-Data Function
-0320-1511248
 """
         msg = MIMEMultipart()
         msg["Subject"] = "Error during Instagram Posting"

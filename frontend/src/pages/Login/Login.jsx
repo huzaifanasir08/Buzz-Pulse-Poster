@@ -19,7 +19,7 @@ const Login = () => {
     const toastId = toast.loading("Logging in...");
 
     try {
-      const response = await axios.post(' https://srv810632.hstgr.cloud/api/login/', credentials);
+      const response = await axios.post(' base_url/api/login/', credentials);
       login(response.data.token);
       toast.update(toastId, {
         render: "Login successful!",
