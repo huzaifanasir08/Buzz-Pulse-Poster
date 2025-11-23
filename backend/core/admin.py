@@ -29,7 +29,7 @@ class ApplicationUserAdmin(BaseUserAdmin):
         }),
     )
 
-check_and_post.delay()
+#check_and_post.delay()
       
 
   

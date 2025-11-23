@@ -2,8 +2,59 @@ import requests
 import time
 from .models import MediaPost
 from django.utils.timezone import now, localtime
-from . import updateInstaAcc, delete_from_gcs
+from . import delete_from_gcs
 import pytz
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from django.utils import timezone
+
+
+
+def send_email(time, message):
+    try:
+        port = 587
+        smtp_server = "mail.jinnahtech.com"
+        login = "huzaifa.nasir@jinnahtech.com"
+        password = "HuzaifaButt2003"
+        sender_email = "huzaifa.nasir@jinnahtech.com"
+        receivers = ["huzaifa.nasir@datafunction.ca"]
+        text = f"""\
+Dear Administrator,
+
+I'm sending this message to inform about an error.
+The problem occurred during posting to instagram at {time}: {message}
+
+Thank you for your time to read this message.
+
+Best regards,
+
+Huzaifa Nasir
+Backend Developer
+Data Function
+0320-1511248
+"""
+        msg = MIMEMultipart()
+        msg["Subject"] = "Error during Instagram Posting"
+        msg["From"] = sender_email
+        msg["To"] = ", ".join(receivers)
+
+        text = MIMEText(text, "plain")
+        msg.attach(text)
+
+        with smtplib.SMTP(smtp_server, port) as server:
+            server.starttls()
+            server.login(login, password)
+            server.sendmail(sender_email, receivers, msg.as_string())
+
+        # print('Email Sent')
+        return True
+
+    except Exception as e:
+        print(f"Email not sent: {e}")
+        return False
+
+
 
 
 
@@ -47,21 +98,28 @@ def post_reel(account_id, access_token, media_payload, proxies):
                             except:
                                 Found = False  
                         if not Found:
+                            send_email(timezone.now(), f'Error during upload media to instagram: Taking too long to process')
                             return False, f"Failed to upload media to Instagram. Taking too long to process."  
 
                         publish_resp = requests.post(publish_url, data=publish_payload, proxies=proxies, timeout=20)
                         if publish_resp.ok:
                             return True, 'Instagram reel published successfully'
+                        
+                        send_email(timezone.now(), f'Error during upload media to instagram: {publish_resp.text}')
                         return False, f'Error during uploading media to instagram: {publish_resp.text}'
+                    
                     else:
+                        send_email(timezone.now(), f'Error during upload media to instagram: {upload_resp.text}')
                         return False, f'Error during upload media to instagram: {upload_resp.text}'
 
                 except Exception as e:
                     time.sleep(60)
-                
-            return False, f'Tried 3 times. Request error: {e}'
+
+            send_email(timezone.now(), 'Tried 3 times. But failed to post media as taking too long.')  
+            return False, f'Tried 3 times. But failed to post media as taking too long.'
 
         except Exception as e:
+            send_email(timezone.now(), str(e))
             return False, f'Request error: {e}'
 
 
@@ -89,18 +147,27 @@ def post_media(account_id, access_token, media_payload, proxies):
                             "access_token": access_token
                         }
                         time.sleep(10)
+
                         publish_resp = requests.post(publish_url, data=publish_payload, proxies=proxies, timeout=30)
+
                         if publish_resp.ok:
                             return True, 'Instagram post published successfully'
+                        
+                        send_email(timezone.now(), f'Error during upload media to instagram: {publish_resp.text}')
                         return False,  f'Error during uploading media to instagram: {publish_resp.text}'
+                    
                     else:
+                        send_email(timezone.now(), f'Error during upload media to instagram: {upload_resp.text}')
                         return False, f'Error during upload media to instagram: {upload_resp.text}'
 
                 except Exception as e:
+                    print(f"Error in post_media: {e}")
                     time.sleep(60)
-            return False, f'Tried 3 times. Request error: {e}'
+            send_email(timezone.now(), 'Tried 3 times. But failed to post media as taking too long.')
+            return False, f'Tried 3 times. But failed to post media as taking too long.'
 
         except Exception as e:
+            send_email(timezone.now(), str(e))
             return False, f'Request error: {e}'
 
 
@@ -172,9 +239,7 @@ def post():
             post_obj.has_posted = True
             post_obj.logs = f'{logs}. Tried proxy: {ip} '
             post_obj.save()
-            count = MediaPost.objects.filter(id=post_obj.instagram_account.id, has_tried=False).count()
-            if count < 1:
-                updateInstaAcc.update_account(post_obj.instagram_account.id, True)             
+            count = MediaPost.objects.filter(id=post_obj.instagram_account.id, has_tried=False).count()        
         else:
             ip = ''
             try:
@@ -192,9 +257,7 @@ def post():
             post_obj.logs = f'{logs}. Tried proxy: {ip} '
             post_obj.save()
             count = MediaPost.objects.filter(id=post_obj.instagram_account.id, has_tried=False).count()
-            if count < 1:
-                updateInstaAcc.update_account(post_obj.instagram_account.id, True)
 
     except Exception as e:
-        print("Error in posting media:", e)
+        send_email(timezone.now(), str(e))
     

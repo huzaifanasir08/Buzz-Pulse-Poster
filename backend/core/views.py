@@ -14,7 +14,7 @@ from zoneinfo import ZoneInfo
 import upload_to_server
 import uuid
 from datetime import datetime, timedelta, timezone
-from . import savetodb, updateInstaAcc
+from . import savetodb
 from django.utils.timezone import now, localtime
 import random
 from django.http import HttpResponse
@@ -164,17 +164,10 @@ def save_post_details(request):
         logs = ''
         HAS_INSERTED = savetodb.saveDataInDb(post_type, caption, times, eastern_time, False, account_id, hashtags, urls, False, logs)
         if HAS_INSERTED:
-            IS_UPDATED = updateInstaAcc.update_account(account_id, False)
-            if IS_UPDATED:
                 return JsonResponse({
                     'status': 'success',
                     # 'account_username':account_username,
                     'message': 'Posts saved successfully'
-                })
-            return JsonResponse({
-                    'status': 'success',
-                    # 'account_username':account_username,
-                    'message': 'Posts saved successfully but account not updated'
                 })
         return JsonResponse({
                 'status': 'error',
@@ -203,24 +196,17 @@ def save_post_details(request):
         logs = ''
         HAS_INSERTED = savetodb.saveDataInDb(post_type, caption, times, eastern_time, False, account_id, hashtags, urls, False, logs)
         if HAS_INSERTED:
-            IS_UPDATED = updateInstaAcc.update_account(account_id, False)
-            if IS_UPDATED:
-                return JsonResponse({
-                    'status': 'success',
-                    # 'account_username':account_username,
-                    'message': 'Posts saved successfully',
-                    'time': times
-                })
             return JsonResponse({
-                    'status': 'success',
-                    # 'account_username':account_username,
-                    'message': 'Posts saved successfully but account not updated',
-                    'time': times
-            })
-        return JsonResponse({
-                'status': 'error',
+                'status': 'success',
                 # 'account_username':account_username,
-                'message': 'Posts not saved'
+                'message': 'Posts saved successfully',
+                'time': times
+            })
+            
+        return JsonResponse({
+            'status': 'error',
+            # 'account_username':account_username,
+            'message': 'Posts not saved'
         })
 
 def accounts_list(request):
