@@ -1,2 +1,2 @@
-# social-media-automation-tool
+# Buzz Pulse Poster | Instagram Automation Platform
  
