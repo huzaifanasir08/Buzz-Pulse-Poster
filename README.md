@@ -225,7 +225,7 @@ npm start
 
 ## 📄 License (MIT)
 
-This project is licensed under the MIT License. See the [LICENSE file]() for more details. is licensed under the MIT License.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/huzaifanasir08/Buzz-Pulse-Poster/blob/main/LICENSE) file for more details. is licensed under the MIT License.
 
 ------------------------------------------------------------------------
 
